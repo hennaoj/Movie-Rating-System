@@ -37,7 +37,7 @@ class Movie(db.Model):
         except:
             return()
 
-    def serialize(self):
+    def Serialize(self):
         moviedict = {
             "title": self.title,
             "release year": str(self.release_year),
@@ -69,7 +69,7 @@ class Review(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     user = db.relationship("User", back_populates="reviews")
 
-    def serialize(self):
+    def Serialize(self):
         reviewdict = {
             "rating": str(self.rating),
             "comment": self.comment,
