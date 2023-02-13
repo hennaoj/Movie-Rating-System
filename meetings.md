@@ -1,14 +1,13 @@
 # Meetings notes
 
 ## Meeting 1.
-* **DATE:**
-* **ASSISTANTS:**
+* **DATE:** 2.2.2023 12:00
+* **ASSISTANTS:** Mika Oja
 
 ### Minutes
-*Summary of what was discussed during the meeting*
+The overall project idea/description was good and fitting for the course.
 
 ### Action points
-*List here the actions points discussed with assistants*
 
 
 
