@@ -16,14 +16,37 @@ movie_genre = db.Table("movie_genre",
 class Movie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(64), unique=True, nullable=False)
-    year = db.Column(db.Integer, nullable=False)
-    description = db.Column(db.String(256))
+    release_year = db.Column(db.Integer, nullable=False)
+    description = db.Column(db.String(512))
+    average_rating = db.Column(db.Float) 
 
     # movie-genre relationship
     genres = db.relationship("Genre", secondary="movie_genre", back_populates="movies")
 
     # one-to-many relationship with movie-reviews
     reviews = db.relationship("Review", back_populates="movie")
+
+    def UpdateRating(self):
+        try:
+            ratings = []
+            for review in self.reviews:
+                ratings.append(float(review.rating))
+            if len(ratings) > 0:
+                self.average_rating = sum(ratings)/len(ratings)
+            return()
+        except:
+            return()
+
+    def serialize(self):
+        moviedict = {
+            "title": self.title,
+            "release year": str(self.release_year),
+            "description": self.description,
+            "average rating": str(self.average_rating),
+            "genres": ", ".join([genre.name for genre in self.genres]),
+            "reviews": ", ".join([str(review.rating) for review in self.reviews])
+        }
+        return moviedict
 
 class Genre(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -35,7 +58,7 @@ class Genre(db.Model):
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     rating = db.Column(db.Integer, nullable=False)
-    comment = db.Column(db.String(256))
+    comment = db.Column(db.String(512))
     date = db.Column(db.DateTime, nullable=False)
 
     # one-to-many relationship with movie-reviews
@@ -45,6 +68,16 @@ class Review(db.Model):
     # one-to-many relationship with user-reviews
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     user = db.relationship("User", back_populates="reviews")
+
+    def serialize(self):
+        reviewdict = {
+            "rating": str(self.rating),
+            "comment": self.comment,
+            "date": str(self.date),
+            "movie": self.movie.title,
+            "user": self.user.username
+        }
+        return reviewdict
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
