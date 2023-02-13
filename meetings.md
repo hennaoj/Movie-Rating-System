@@ -8,7 +8,6 @@
 The overall project idea/description was good and fitting for the course.
 
 ### Action points
--
 
 
 
