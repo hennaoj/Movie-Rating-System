@@ -13,16 +13,19 @@ The overall project idea/description was good and fitting for the course.
 
 
 ## Meeting 2.
-* **DATE:**
-* **ASSISTANTS:**
+* **DATE:** 16.2.2023 15:30
+* **ASSISTANTS:** Iván Sánchez Milara
 
 ### Minutes
-*Summary of what was discussed during the meeting*
+Discussed the database design and the model implementations. Overall the design and models looked good, some things to fix listed below.
 
 ### Action points
-*List here the actions points discussed with assistants*
-
-
+Fix diagram
+Provide a database
+Add more instructions for setup
+Add ONDELETE/ONUPDATE behaviour
+Add validation for review and gender as well as limitation to the date/year
+Check for an automatic option for average calculation
 
 
 ## Meeting 3.
