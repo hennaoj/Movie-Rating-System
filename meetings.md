@@ -20,12 +20,12 @@ The overall project idea/description was good and fitting for the course.
 Discussed the database design and the model implementations. Overall the design and models looked good, some things to fix listed below.
 
 ### Action points
-Fix diagram
-Provide a database
-Add more instructions for setup
-Add ONDELETE/ONUPDATE behaviour
-Add validation for review and gender as well as limitation to the date/year
-Check for an automatic option for average calculation
+- Fix diagram
+- Provide a database
+- Add more instructions for setup
+- Add ONDELETE/ONUPDATE behaviour
+- Add validation for review and gender as well as limitation to the date/year
+- Check for an automatic option for average calculation
 
 
 ## Meeting 3.
