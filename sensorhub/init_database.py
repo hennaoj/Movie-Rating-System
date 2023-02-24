@@ -1,5 +1,4 @@
-from app import db
-from app import app
+from app import db, app
 
 # initialize the database
 ctx = app.app_context()

@@ -1,6 +1,6 @@
-from app import db, Movie, User, Genre, Review
+from app import Movie, User, Genre, Review
 from datetime import datetime
-from app import app
+from app import db, app
 
 ctx = app.app_context()
 ctx.push()

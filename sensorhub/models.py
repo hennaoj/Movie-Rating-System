@@ -13,7 +13,7 @@ movie_genre = db.Table("movie_genre",
 
 class Movie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(64), unique=True, nullable=False)
+    title = db.Column(db.String(64), nullable=False)
     release_year = db.Column(db.Integer, nullable=False)
     description = db.Column(db.String(512))
     average_rating = db.Column(db.Float) 
@@ -45,6 +45,31 @@ class Movie(db.Model):
             "reviews": ", ".join([str(review.rating) for review in self.reviews])
         }
         return moviedict
+        
+    @staticmethod
+    def json_schema():
+        schema = {
+            "type": "object",
+            "required": ["title", "release_year"]
+        }
+        props = schema["properties"] = {}
+        props["title"] = {
+            "description": "Title of the movie",
+            "type": "string"
+        }
+        props["release_year"] = {
+            "description": "The release year of the movie",
+            "type": "integer"
+        }
+        props["description"] = {
+            "description": "Summary/description of the movie",
+            "type": "string"
+        }
+        props["average_rating"] = {
+            "description": "Average rating based on movie reviews",
+            "type": "integer"
+        }
+        return schema
 
 class Genre(db.Model):
     id = db.Column(db.Integer, primary_key=True)
