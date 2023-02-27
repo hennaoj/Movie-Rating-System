@@ -57,7 +57,7 @@ class MovieCollection(Resource):
         db.session.commit()
         
         return Response(status=201, headers={
-            "Location": url_for("movieitem", id=movie.id)
+            "Location": url_for("movieitem", movie=movie.id)
         })
 
 class MovieItem(Resource):

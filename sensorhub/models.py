@@ -59,7 +59,9 @@ class Movie(db.Model):
         }
         props["release_year"] = {
             "description": "The release year of the movie",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 1888,
+            "maximum": 2023
         }
         props["description"] = {
             "description": "Summary/description of the movie",
