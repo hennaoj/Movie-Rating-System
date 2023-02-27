@@ -47,7 +47,6 @@ class MovieCollection(Resource):
         except KeyError:
             pass
 
-
         movie = Movie(
             title=request.json["title"],
             release_year=request.json["release_year"],

@@ -22,11 +22,11 @@ class GenreCollection(Resource):
 
 class GenreItem(Resource):
 
-    def get(self, movie):
+    def get(self, genre):
         pass
     
-    def put(self, movie):
+    def put(self, genre):
         pass
     
-    def delete(self, movie):
+    def delete(self, genre):
         pass
