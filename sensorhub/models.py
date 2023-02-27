@@ -104,6 +104,30 @@ class Review(db.Model):
         }
         return reviewdict
 
+    @staticmethod
+    def json_schema():
+        schema = {
+            "type": "object",
+            "required": ["rating", "date"]
+        }
+        props = schema["properties"] = {}
+        props["rating"] = {
+            "description": "A 1-5 rating of the movie",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+        }
+        props["date"] = {
+            "description": "The date/time the review was added",
+            "type": "string",
+            "pattern": "(\\d{4})-(\\d{2})-(\\d{2})[T](\\d{2}):(\\d{2}):(\\d{2})[+](\\d{2}):(\\d{2})"
+        }
+        props["comment"] = {
+            "description": "Written review of the movie",
+            "type": "string"
+        }
+        return schema
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(32), unique=True, nullable=False)
@@ -113,3 +137,33 @@ class User(db.Model):
 
     # one-to-many relationship with user-reviews
     reviews = db.relationship("Review", back_populates="user")
+
+    @staticmethod
+    def json_schema():
+        schema = {
+            "type": "object",
+            "required": ["username", "age", "gender", "account_creation_date"]
+        }
+        props = schema["properties"] = {}
+        props["username"] = {
+            "description": "The username of the user",
+            "type": "string"
+        }
+        props["age"] = {
+            "description": "The age of the user in years",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 130
+        }
+        props["gender"] = {
+            "description": "Gender of the user based on ISO/IEC 5218",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2
+        }
+        props["account_creation_date"] = {
+            "description": "The date/time when the user was added to the database",
+            "type": "string",
+            "pattern": "(\\d{4})-(\\d{2})-(\\d{2})[T](\\d{2}):(\\d{2}):(\\d{2})[+](\\d{2}):(\\d{2})"
+        }
+        return schema
