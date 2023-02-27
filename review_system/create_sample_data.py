@@ -53,19 +53,19 @@ u2 = User(
 
 # reviews
 r1 = Review(
-    rating=9,
+    rating=5,
     comment="This movie is awesome!",
     date=datetime.now(),
 )
 
 r2 = Review(
-    rating=3,
+    rating=1,
     comment="Bad movie",
     date=datetime(2015, 2, 3),
 )
 
 r3 = Review(
-    rating=6,
+    rating=3,
     comment="Decent movie",
     date=datetime(2018, 5, 3),
 )

@@ -27,7 +27,6 @@ class MovieCollection(Resource):
         except ValidationError as error:
             raise BadRequest(description=str(error)) from error
 
-
         movie_genres = []
         try:
             given_genres = request.json["genres"]

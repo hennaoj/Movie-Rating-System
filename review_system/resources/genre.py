@@ -4,7 +4,7 @@ from flask import Response, request, url_for
 from flask_restful import Resource
 from werkzeug.exceptions import NotFound, BadRequest, UnsupportedMediaType
 
-from models import db, Movie, User, Genre, Review
+from models import db, Genre
 
 class GenreCollection(Resource):
 

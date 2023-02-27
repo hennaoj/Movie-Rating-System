@@ -71,6 +71,10 @@ class Movie(db.Model):
             "description": "Average rating based on movie reviews",
             "type": "integer"
         }
+        props["genres"] = {
+            "descriptions": "A list of genres the movie belongs to",
+            "type": "array"
+        }
         return schema
 
 class Genre(db.Model):
@@ -108,7 +112,7 @@ class Review(db.Model):
     def json_schema():
         schema = {
             "type": "object",
-            "required": ["rating", "date"]
+            "required": ["rating"]
         }
         props = schema["properties"] = {}
         props["rating"] = {
@@ -156,10 +160,10 @@ class User(db.Model):
             "maximum": 130
         }
         props["gender"] = {
-            "description": "Gender of the user based on ISO/IEC 5218",
+            "description": "Gender of the insipired by ISO/IEC 5218",
             "type": "integer",
-            "minimum": 0,
-            "maximum": 2
+            "minimum": 1,
+            "maximum": 3
         }
         props["account_creation_date"] = {
             "description": "The date/time when the user was added to the database",
