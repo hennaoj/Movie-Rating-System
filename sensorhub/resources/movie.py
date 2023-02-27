@@ -26,12 +26,34 @@ class MovieCollection(Resource):
             validate(request.json, Movie.json_schema())
         except ValidationError as error:
             raise BadRequest(description=str(error)) from error
-        
+
+
+        movie_genres = []
+        try:
+            given_genres = request.json["genres"]
+            db_genres = [genre.name for genre in Genre.query.all()]
+
+            for genre in given_genres:
+                #creating a new genre object or fetching an existing one if the
+                #genre name is found in the database
+                if genre not in db_genres:
+                    genre_to_add = Genre(
+                        name=genre
+                    )
+                else:
+                    genre_to_add = Genre.query.filter_by(name=genre).first()
+                movie_genres.append(genre_to_add)
+            
+        except KeyError:
+            pass
+
+
         movie = Movie(
             title=request.json["title"],
-            release_year=request.json["release_year"]
+            release_year=request.json["release_year"],
+            genres=movie_genres
         )
-        
+
         db.session.add(movie)
         db.session.commit()
         
