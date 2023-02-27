@@ -8,19 +8,19 @@ from models import db, Movie, User, Genre, Review
 
 class ReviewCollection(Resource):
 
-    def get(self):
+    def get(self, movie):
         pass
     
-    def post(self):
+    def post(self, movie):
         pass
 
 class ReviewItem(Resource):
 
-    def get(self, movie):
+    def get(self, movie, review):
         pass
     
-    def put(self, movie):
+    def put(self, movie, review):
         pass
     
-    def delete(self, movie):
+    def delete(self, movie, review):
         pass
