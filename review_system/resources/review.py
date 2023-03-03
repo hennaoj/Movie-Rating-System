@@ -10,13 +10,10 @@ from models import db, Movie, User, Review
 class ReviewCollection(Resource):
 
     def get(self, movie):
-        reviews = Review.query.filter_by(movie_id=movie)
+        reviews = Review.query.filter_by(movie_id=movie.id)
         json_reviews = []
         for review in reviews:
-            json_reviews.append({
-                "rating": review.rating,
-                "comment": review.comment
-            })
+            json_reviews.append(Review.Serialize(review))
         return Response(json.dumps(json_reviews), 200)
     
     def post(self, movie):
@@ -37,9 +34,11 @@ class ReviewCollection(Resource):
             rating=request.json["rating"],
             comment=comment,
             date=datetime.now(),
-            movie_id=movie,
+            movie_id=movie.id,
             user_id = 1 #this needs to be fixed, just a placeholder for now
         )
+
+        #average update needs to be added
 
         db.session.add(review)
         db.session.commit()
@@ -51,7 +50,7 @@ class ReviewCollection(Resource):
 class ReviewItem(Resource):
 
     def get(self, movie, review):
-        pass
+        return Response(json.dumps(Review.Serialize(review)), 200)
     
     def put(self, movie, review):
         pass

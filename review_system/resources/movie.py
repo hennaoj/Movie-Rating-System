@@ -12,11 +12,7 @@ class MovieCollection(Resource):
         movies = Movie.query.all()
         json_movies = []
         for movie in movies:
-            json_movies.append({
-                "title": movie.title,
-                "release_year": movie.release_year,
-                "average_rating": movie.average_rating
-            })
+            json_movies.append(Movie.Serialize(movie))
         return Response(json.dumps(json_movies), 200)
     
     def post(self):
@@ -62,7 +58,7 @@ class MovieCollection(Resource):
 class MovieItem(Resource):
 
     def get(self, movie):
-        pass
+        return Response(json.dumps(Movie.Serialize(movie)), 200)
     
     def put(self, movie):
         pass
