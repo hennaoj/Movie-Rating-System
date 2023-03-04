@@ -6,15 +6,6 @@
 * Joona Meriläinen jmerilai19@student.oulu.fi
 * Joonas Sutinen jsutinen18@student.oulu.fi
 
-## How to test database
-1. Run init_database.py to create movie_rating_system.db
-```
-python init_database.py
-```
-2. Run create_sample_data.py to populate database with sample data
-```
-python create_sample_data.py
-```
 
 
 
