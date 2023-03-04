@@ -23,7 +23,7 @@ class GenreCollection(Resource):
 class GenreItem(Resource):
 
     def get(self, genre):
-        pass
+        return Response(json.dumps(Genre.Serialize(genre)), 200)
     
     def put(self, genre):
         pass

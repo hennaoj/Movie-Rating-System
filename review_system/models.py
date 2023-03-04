@@ -84,6 +84,25 @@ class Genre(db.Model):
     # many-to-many relationship with movies-genres
     movies = db.relationship("Movie", secondary="movie_genre", back_populates="genres")
 
+    def Serialize(self):
+        genredict = {
+            "name": self.name
+        }
+        return genredict
+
+    @staticmethod
+    def json_schema():
+        schema = {
+            "type": "object",
+            "required": ["name"]
+        }
+        props = schema["properties"] = {}
+        props["name"] = {
+            "description": "Name of the genre",
+            "type": "string"
+        }
+        return schema
+
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     rating = db.Column(db.Integer, nullable=False)
