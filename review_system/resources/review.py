@@ -35,7 +35,7 @@ class ReviewCollection(Resource):
             comment=comment,
             date=datetime.now(),
             movie_id=movie.id,
-            user_id = 1 #this needs to be fixed, just a placeholder for now
+            user_id = 1 # this needs to be fixed, just a placeholder for now
         )
 
         #average update needs to be added

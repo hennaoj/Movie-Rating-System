@@ -29,8 +29,8 @@ class MovieCollection(Resource):
             db_genres = [genre.name for genre in Genre.query.all()]
 
             for genre in given_genres:
-                #creating a new genre object or fetching an existing one if the
-                #genre name is found in the database
+                # creating a new genre object or fetching an existing one if the
+                # genre name is found in the database
                 if genre not in db_genres:
                     genre_to_add = Genre(
                         name=genre

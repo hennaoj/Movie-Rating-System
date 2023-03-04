@@ -89,13 +89,13 @@ class Review(db.Model):
     rating = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.String(512))
     date = db.Column(db.DateTime, nullable=False)
+    movie_id = db.Column(db.Integer, db.ForeignKey("movie.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
     # one-to-many relationship with movie-reviews
     movie = db.relationship("Movie", back_populates="reviews")
-    movie_id = db.Column(db.Integer, db.ForeignKey("movie.id"), nullable=False)
 
     # one-to-many relationship with user-reviews
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     user = db.relationship("User", back_populates="reviews")
 
     def Serialize(self):
@@ -136,7 +136,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(32), unique=True, nullable=False)
     age = db.Column(db.Integer, nullable=False)
-    gender = db.Column(db.Integer, nullable=False) # 1= male, 2 = female, 3 = other
+    gender = db.Column(db.Integer, nullable=False) # 1 = male, 2 = female, 3 = other
     account_creation_date = db.Column(db.DateTime, nullable=False)
 
     # one-to-many relationship with user-reviews
@@ -160,7 +160,7 @@ class User(db.Model):
             "maximum": 130
         }
         props["gender"] = {
-            "description": "Gender of the insipired by ISO/IEC 5218",
+            "description": "Gender of the user as int",
             "type": "integer",
             "minimum": 1,
             "maximum": 3
