@@ -24,7 +24,11 @@ class GenreCollection(Resource):
 class GenreItem(Resource):
 
     def get(self, genre):
-        return Response(json.dumps(Genre.Serialize(genre)), 200)
+        movieslist = []
+        for movie in genre.movies:
+            movieslist.append(movie.title)
+        moviesingenredict = {'genre': genre.name, 'movies': movieslist}
+        return Response(json.dumps(moviesingenredict), 200)
     
     def put(self, genre):
         pass
