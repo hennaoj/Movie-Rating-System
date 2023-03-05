@@ -37,6 +37,12 @@ flask run
 ```
 Server is open at `http://localhost:5000`
 
+**Run unit tests**
+```
+python -m pytest ./testing/testing.py
+```
+
+
 
 ## Queries
 **Routes**
