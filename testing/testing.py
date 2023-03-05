@@ -6,7 +6,7 @@ import tempfile
 from review_system import create_app, db
 from review_system.create_sample_data import PopulateTestDb
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def app():
     db_fd, db_fname = tempfile.mkstemp()
     config = {
@@ -23,7 +23,7 @@ def app():
     os.close(db_fd)
     os.unlink(db_fname)
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def client(app):
     return app.test_client()
 

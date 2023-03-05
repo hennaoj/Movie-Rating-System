@@ -4,10 +4,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api
 
 db = SQLAlchemy()
-api_ = Api()
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
+    api_ = Api()
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(app.instance_path, "movie_rating_system.db")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     if test_config != None:
