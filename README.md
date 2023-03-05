@@ -41,7 +41,11 @@ Server is open at `http://localhost:5000`
 ```
 python -m pytest ./testing/testing.py
 ```
-
+**Get unit test coverage**
+```
+coverage run -m pytest ./testing/testing.py
+coverage html
+```
 
 
 ## Queries
