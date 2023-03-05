@@ -50,11 +50,10 @@ class ReviewCollection(Resource):
         })
 
 class ReviewItem(Resource):
-
     def get(self, movie, review):
-        if review in movie.reviews:
-            return Response(json.dumps(Review.Serialize(review)), 200)
-        else:
+        try:
+            return Response(json.dumps(movie.reviews[review].Serialize()), 200)
+        except:
             return Response(status=404)
     
     def put(self, movie, review):

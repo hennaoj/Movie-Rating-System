@@ -17,7 +17,6 @@ class MovieConverter(BaseConverter):
 class ReviewConverter(BaseConverter):
     
     def to_python(self, review_id):
-        print(review_id)
         db_review = Review.query.filter_by(id=review_id).first()
         if db_review is None:
             raise NotFound
