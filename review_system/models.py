@@ -1,9 +1,12 @@
 from flask_sqlalchemy import SQLAlchemy
-from app import app
+import click
+from flask.cli import with_appcontext
+from review_system import db
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///movie_rating_system.db"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-db = SQLAlchemy(app)
+@click.command("init-db")
+@with_appcontext
+def init_db_command():
+    db.create_all()
 
 # movies-genres many-to-many relationship table
 movie_genre = db.Table("movie_genre",

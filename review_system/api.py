@@ -1,20 +1,17 @@
-from flask_restful import Api
+from review_system.resources.movie import MovieCollection, MovieItem
+from review_system.resources.review import ReviewCollection, ReviewItem
+from review_system.resources.genre import GenreCollection, GenreItem
+from review_system.utils import MovieConverter, ReviewConverter, GenreConverter
 
-from app import app
-from resources.movie import MovieCollection, MovieItem
-from resources.review import ReviewCollection, ReviewItem
-from resources.genre import GenreCollection, GenreItem
-from utils import MovieConverter, ReviewConverter, GenreConverter
+def AddUrlMapConverters(app):
+	app.url_map.converters["movie"] = MovieConverter
+	app.url_map.converters["review"] = ReviewConverter
+	app.url_map.converters["genre"] = GenreConverter
 
-app.url_map.converters["movie"] = MovieConverter
-app.url_map.converters["review"] = ReviewConverter
-app.url_map.converters["genre"] = GenreConverter
-
-api = Api(app)
-
-api.add_resource(MovieCollection, "/api/movies/")
-api.add_resource(MovieItem, "/api/movies/<movie:movie>/")
-api.add_resource(ReviewCollection, "/api/movies/<movie:movie>/reviews/")
-api.add_resource(ReviewItem, "/api/movies/<movie:movie>/reviews/<review:review>/")
-api.add_resource(GenreCollection, "/api/genres/")
-api.add_resource(GenreItem, "/api/genres/<genre:genre>/")
+def AddApiResources(api):
+	api.add_resource(MovieCollection, "/api/movies/")
+	api.add_resource(MovieItem, "/api/movies/<movie:movie>/")
+	api.add_resource(ReviewCollection, "/api/movies/<movie:movie>/reviews/")
+	api.add_resource(ReviewItem, "/api/movies/<movie:movie>/reviews/<review:review>/")
+	api.add_resource(GenreCollection, "/api/genres/")
+	api.add_resource(GenreItem, "/api/genres/<genre:genre>/")

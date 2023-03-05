@@ -1,6 +1,7 @@
 from werkzeug.exceptions import NotFound
 from werkzeug.routing import BaseConverter
-from models import Movie, Review, Genre
+from review_system.models import Movie, Genre, Review
+
 
 class MovieConverter(BaseConverter):
     
