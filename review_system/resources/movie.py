@@ -17,9 +17,12 @@ class MovieCollection(Resource):
         return Response(json.dumps(json_movies), 200)
     
     def post(self):
-        if not request.json:
-            return UnsupportedMediaType
-        requestdict = json.loads(request.json)
+        try:
+            if not request.json:
+                return Response(status=415)
+            requestdict = json.loads(request.json)
+        except:
+            return Response(status=415)
         try:
             validate(requestdict, Movie.json_schema())
         except ValidationError as error:
@@ -65,10 +68,13 @@ class MovieItem(Resource):
         return Response(json.dumps(movie.Serialize()), 200)
     
     def put(self, movie):
-        if not request.json:
-            return UnsupportedMediaType
-        else:
-            requestdict = json.loads(request.json)
+        try:
+            if not request.json:
+                return Response(status=415)
+            else:
+                requestdict = json.loads(request.json)
+        except:
+            return Response(status=415)
         movie_genres = []
         try:
             given_genres = requestdict["genres"]
@@ -99,6 +105,8 @@ class MovieItem(Resource):
             updatedict["genres"] = movie_genres
         updatecount = Movie.query.filter_by(id=movie.id).update(updatedict)
         db.session.commit() 
-    
+        return Response(status=204)
     def delete(self, movie):
-        pass
+        Movie.query.filter_by(id=movie.id).delete()
+        db.session.commit() 
+        return Response(status=200)

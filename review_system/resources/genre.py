@@ -19,7 +19,23 @@ class GenreCollection(Resource):
         return Response(json.dumps(json_genres), 200)
     
     def post(self):
-        pass
+        try:
+            if not request.json:
+                return Response(status=415)
+            requestdict = json.loads(request.json)
+        except:
+            return Response(status=415)
+        try:
+            validate(requestdict, Genre.json_schema())
+        except ValidationError as error:
+            raise BadRequest(description=str(error)) from error
+        genre = Genre(name=json.loads(request.json)["name"])
+        db.session.add(genre)
+        db.session.commit()
+        return Response(status=201, headers={
+            "Location": url_for("genreitem", genre=genre)
+        })
+
 
 class GenreItem(Resource):
 

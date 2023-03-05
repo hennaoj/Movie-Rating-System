@@ -40,3 +40,55 @@ class TestMovieCollection(object):
         newmovie =  {"title":"The Godfather 2", "release_year":1974, "description":"Part 2"}
         resp = client.post("/api/movies/", json=json.dumps(newmovie))
         assert resp.status_code == 201
+        resp = client.get("/api/movies/")
+        assert resp.status_code == 200
+        listofmovies = json.loads(resp.data)
+        assert len(listofmovies) == 3
+        newmovie =  {"title":"The Godfather 2", "release_year":"1974", "description":"Part 2"}
+        resp = client.post("/api/movies/", data=newmovie)
+        assert resp.status_code == 415
+
+class TestMovieItem(object):
+    def test_get(self, client):
+        resp = client.get("/api/movies/1/")
+        assert resp.status_code == 200
+        assert json.loads(resp.data)["title"] == "The Dark Knight"
+    def test_put(self, client):
+        resp = client.get("/api/movies/1/")
+        assert resp.status_code == 200
+        assert json.loads(resp.data)["release year"] == "2008"
+        editedmovie =  {"title":"The Dark Knight", "release_year":2009}
+        resp = client.put("/api/movies/1/", json=json.dumps(editedmovie))
+        assert resp.status_code == 204
+        resp = client.get("/api/movies/1/")
+        assert resp.status_code == 200
+        assert json.loads(resp.data)["release year"] == "2009"
+        resp = client.post("/api/movies/", data=editedmovie)
+        assert resp.status_code == 415
+    def test_delete(self, client):
+        resp = client.get("/api/movies/1/")
+        assert resp.status_code == 200
+        assert json.loads(resp.data)["title"] == "The Dark Knight"
+        resp = client.delete("/api/movies/1/")
+        assert resp.status_code == 200
+        resp = client.get("/api/movies/1/")
+        assert resp.status_code == 404
+
+class TestGenreCollection(object):
+    def test_get(self, client):
+        resp = client.get("/api/genres/")
+        assert resp.status_code == 200
+        listofgenres = json.loads(resp.data)
+        assert len(listofgenres) == 3
+        for item in listofgenres:
+            assert "name" in item
+    def test_post(self, client):
+        newgenre =  {"name":"Horror"}
+        resp = client.post("/api/genres/", json=json.dumps(newgenre))
+        assert resp.status_code == 201
+        resp = client.get("/api/genres/")
+        assert resp.status_code == 200
+        listofgenres = json.loads(resp.data)
+        assert len(listofgenres) == 4
+        resp = client.post("/api/genres/", data=newgenre)
+        assert resp.status_code == 415
