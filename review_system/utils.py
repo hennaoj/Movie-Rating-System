@@ -11,7 +11,7 @@ class MovieConverter(BaseConverter):
         return db_movie
         
     def to_url(self, db_movie):
-        return db_movie.id
+        return str(db_movie.id)
 
 class ReviewConverter(BaseConverter):
     
@@ -22,7 +22,7 @@ class ReviewConverter(BaseConverter):
         return db_review
         
     def to_url(self, db_review):
-        return db_review.id
+        return str(db_review.id)
     
 class GenreConverter(BaseConverter):
     
@@ -33,5 +33,5 @@ class GenreConverter(BaseConverter):
         return db_genre
         
     def to_url(self, db_genre):
-        return db_genre.id
+        return str(db_genre.id)
     
