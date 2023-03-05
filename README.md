@@ -18,11 +18,17 @@ pip install -r requirements.txt
 
 **Create sample data for testing**
 ```
-cd review_system
-
-python init_database.py
-
-python create_sample_data.py
+while in Movie-Rating-System folder:
+  on Windows:
+    set FLASK_APP=review_system
+    set FLASK_ENV=development
+    flask init-db
+    flask create-sample-data
+  on Linux:
+    export FLASK_APP=review_system
+    export FLASK_ENV=development
+    flask init-db
+    flask create-sample-data
 ```
 
 **Run API**
