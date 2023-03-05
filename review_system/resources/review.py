@@ -52,7 +52,10 @@ class ReviewCollection(Resource):
 class ReviewItem(Resource):
 
     def get(self, movie, review):
-        return Response(json.dumps(Review.Serialize(review)), 200)
+        if review in movie.reviews:
+            return Response(json.dumps(Review.Serialize(review)), 200)
+        else:
+            return Response(status=404)
     
     def put(self, movie, review):
         pass
