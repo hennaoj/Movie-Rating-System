@@ -6,6 +6,7 @@ from werkzeug.exceptions import NotFound, BadRequest, UnsupportedMediaType
 
 from review_system import db
 from review_system.models import Movie, Genre, Review
+from review_system.auth import check_api_key
 
 class GenreCollection(Resource):
 
@@ -18,18 +19,17 @@ class GenreCollection(Resource):
             })
         return Response(json.dumps(json_genres), 200)
     
+    @check_api_key
     def post(self):
         try:
-            if not request.json:
-                return Response(status=415)
-            requestdict = json.loads(request.json)
+            requestdict = json.loads(request.data)
         except:
             return Response(status=415)
         try:
             validate(requestdict, Genre.json_schema())
         except ValidationError as error:
             raise BadRequest(description=str(error)) from error
-        genre = Genre(name=json.loads(request.json)["name"])
+        genre = Genre(name=json.loads(request.data)["name"])
         db.session.add(genre)
         db.session.commit()
         return Response(status=201, headers={

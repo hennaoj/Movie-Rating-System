@@ -7,6 +7,7 @@ from werkzeug.exceptions import NotFound, BadRequest, UnsupportedMediaType
 
 from review_system import db
 from review_system.models import Movie, User, Review
+from review_system.auth import check_api_key
 
 
 class ReviewCollection(Resource):
@@ -18,9 +19,11 @@ class ReviewCollection(Resource):
             json_reviews.append(Review.Serialize(review))
         return Response(json.dumps(json_reviews), 200)
     
+    @check_api_key
     def post(self, movie):
         if not request.json:
             return Response(status=415)
+        try:
         try:
             validate(request.json, Review.json_schema())
         except ValidationError as error:

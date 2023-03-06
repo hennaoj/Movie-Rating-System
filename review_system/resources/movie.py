@@ -6,6 +6,7 @@ from werkzeug.exceptions import NotFound, BadRequest, UnsupportedMediaType
 
 from review_system import db
 from review_system.models import Movie, Genre, Review
+from review_system.auth import check_api_key
 
 class MovieCollection(Resource):
 
@@ -16,11 +17,10 @@ class MovieCollection(Resource):
             json_movies.append(movie.Serialize())
         return Response(json.dumps(json_movies), 200)
     
+    @check_api_key
     def post(self):
         try:
-            if not request.json:
-                return Response(status=415)
-            requestdict = json.loads(request.json)
+            requestdict = json.loads(request.data)
         except:
             return Response(status=415)
         try:
@@ -29,7 +29,7 @@ class MovieCollection(Resource):
             print(error)
             raise BadRequest(description=str(error)) from error
         
-        requestdict = json.loads(request.json)
+        requestdict = json.loads(request.data)
 
         movie_genres = []
         try:

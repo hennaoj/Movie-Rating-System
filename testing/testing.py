@@ -5,6 +5,7 @@ import pytest
 import tempfile
 from review_system import create_app, db
 from review_system.create_sample_data import PopulateTestDb
+from review_system.create_sample_api_key import CreateSampleKey
 
 @pytest.fixture(scope="function")
 def app():
@@ -17,6 +18,7 @@ def app():
     with app.app_context():
         db.create_all()
         PopulateTestDb()
+        CreateSampleKey()
         
     yield app
     
@@ -38,14 +40,14 @@ class TestMovieCollection(object):
             assert "release year" in item
     def test_post(self, client):
         newmovie =  {"title":"The Godfather 2", "release_year":1974, "description":"Part 2"}
-        resp = client.post("/api/movies/", json=json.dumps(newmovie))
+        resp = client.post("/api/movies/", json=newmovie, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 201
         resp = client.get("/api/movies/")
         assert resp.status_code == 200
         listofmovies = json.loads(resp.data)
         assert len(listofmovies) == 3
         newmovie =  {"title":"The Godfather 2", "release_year":"1974", "description":"Part 2"}
-        resp = client.post("/api/movies/", data=newmovie)
+        resp = client.post("/api/movies/", data=newmovie, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 415
 
 class TestMovieItem(object):
@@ -63,7 +65,7 @@ class TestMovieItem(object):
         resp = client.get("/api/movies/1/")
         assert resp.status_code == 200
         assert json.loads(resp.data)["release year"] == "2009"
-        resp = client.post("/api/movies/", data=editedmovie)
+        resp = client.post("/api/movies/", data=editedmovie, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 415
     def test_delete(self, client):
         resp = client.get("/api/movies/1/")
@@ -84,13 +86,13 @@ class TestGenreCollection(object):
             assert "name" in item
     def test_post(self, client):
         newgenre =  {"name":"Horror"}
-        resp = client.post("/api/genres/", json=json.dumps(newgenre))
+        resp = client.post("/api/genres/", json=newgenre, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 201
         resp = client.get("/api/genres/")
         assert resp.status_code == 200
         listofgenres = json.loads(resp.data)
         assert len(listofgenres) == 4
-        resp = client.post("/api/genres/", data=newgenre)
+        resp = client.post("/api/genres/", data=newgenre, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 415
 
 class TestReviewCollection(object):
@@ -103,7 +105,7 @@ class TestReviewCollection(object):
             assert "rating" in item
             assert "date" in item
     def test_post(self, client):
-        newreview = {"rating": 4}
+        newreview = {"rating":4}
         resp = client.post("/api/movies/1/reviews/", json=newreview)
         assert resp.status_code == 201
         resp = client.get("/api/movies/1/reviews/")

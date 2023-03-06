@@ -21,6 +21,8 @@ def create_app(test_config=None):
     app.cli.add_command(models.init_db_command)
     from . import create_sample_data
     app.cli.add_command(create_sample_data.create_sample_data)
+    from . import create_sample_api_key
+    app.cli.add_command(create_sample_api_key.create_sample_api_key)
     from . import api
     api.AddUrlMapConverters(app)
     api.AddApiResources(api_)
