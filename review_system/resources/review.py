@@ -24,7 +24,6 @@ class ReviewCollection(Resource):
         if not request.json:
             return Response(status=415)
         try:
-        try:
             validate(request.json, Review.json_schema())
         except ValidationError as error:
             print(error)
