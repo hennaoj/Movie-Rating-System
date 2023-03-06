@@ -24,11 +24,13 @@ while in Movie-Rating-System folder:
     set FLASK_ENV=development
     flask init-db
     flask create-sample-data
+    flask create-sample-api-key
   on Linux:
     export FLASK_APP=review_system
     export FLASK_ENV=development
     flask init-db
     flask create-sample-data
+    flask create-sample-api-key
 ```
 
 **Run API**
@@ -53,7 +55,7 @@ coverage html
 - /api/movies/
 - /api/movies/{id}
 - /api/movies/{id}/reviews/
-- /api/movies/{id}/reviews/<id}
+- /api/movies/{id}/reviews/{id}
 - /api/genres/
 - /api/genres/{id}/
 
