@@ -19,28 +19,22 @@ class ReviewCollection(Resource):
         return Response(json.dumps(json_reviews), 200)
     
     def post(self, movie):
-        try:
-            if not request.json:
-                return Response(status=415)
-            requestdict = json.loads(request.json)
-        except:
+        if not request.json:
             return Response(status=415)
         try:
-            validate(requestdict, Review.json_schema())
+            validate(request.json, Review.json_schema())
         except ValidationError as error:
             print(error)
             raise BadRequest(description=str(error)) from error
 
-        requestdict = json.loads(request.json)
-
         comment = None
         try:
-            comment = requestdict["comment"]
+            comment = request.json["comment"]
         except KeyError:
             pass
 
         review = Review(
-            rating=requestdict["rating"],
+            rating=request.json["rating"],
             comment=comment,
             date=datetime.now(),
             movie_id=movie.id,
@@ -67,4 +61,7 @@ class ReviewItem(Resource):
         pass
     
     def delete(self, movie, review):
-        pass
+        review = movie.reviews[review]
+        Review.query.filter_by(id=review.id).delete()
+        db.session.commit() 
+        return Response(status=200)
