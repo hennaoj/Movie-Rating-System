@@ -105,6 +105,11 @@ class TestReviewCollection(object):
             assert "rating" in item
             assert "date" in item
     def test_post(self, client):
+        resp = client.get("/api/movies/1/")
+        assert resp.status_code == 200
+        movie = json.loads(resp.data)
+        assert movie["average rating"] == "3.0"
+
         newreview = {"rating":4}
         resp = client.post("/api/movies/1/reviews/", json=newreview, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 201
@@ -113,6 +118,10 @@ class TestReviewCollection(object):
         listofreviews = json.loads(resp.data)
         assert len(listofreviews) == 3
         assert listofreviews[-1]["rating"] == '4'
+        resp = client.get("/api/movies/1/")
+        assert resp.status_code == 200
+        movie = json.loads(resp.data)
+        assert movie["average rating"] == str(3 + 1/3)
 
         #test posting with invalid data
         badreview = {"rating":"four"}

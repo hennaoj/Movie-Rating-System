@@ -46,10 +46,11 @@ class ReviewCollection(Resource):
         #average update needs to be added
 
         db.session.add(review)
+        movie.UpdateRating()
         db.session.commit()
-        
+
         return Response(status=201, headers={
-            "Location": url_for("reviewitem", movie=movie, review=review.id)
+            "Location": url_for("reviewitem", movie=movie, review=movie.reviews.index(review))
         })
 
 class ReviewItem(Resource):
