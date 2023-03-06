@@ -13,7 +13,7 @@ def CreateSampleKey():
     db.session.add(db_key)
     db.session.commit()
 
-    print(token)
+    print("API-Key: " + token)
 
 @click.command("create-sample-api-key")
 @with_appcontext
