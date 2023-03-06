@@ -92,3 +92,22 @@ class TestGenreCollection(object):
         assert len(listofgenres) == 4
         resp = client.post("/api/genres/", data=newgenre)
         assert resp.status_code == 415
+
+class TestReviewCollection(object):
+    def test_get(self, client):
+        resp = client.get("/api/movies/1/reviews/")
+        assert resp.status_code == 200
+        listofreviews = json.loads(resp.data)
+        assert len(listofreviews) == 2
+        for item in listofreviews:
+            assert "rating" in item
+            assert "date" in item
+    def test_post(self, client):
+        newreview = {"rating":4}
+        resp = client.post("/api/movies/1/reviews/", json=json.dumps(newreview))
+        assert resp.status_code == 201
+        resp = client.get("/api/movies/1/reviews/")
+        assert resp.status_code == 200
+        listofreviews = json.loads(resp.data)
+        assert len(listofreviews) == 3
+        assert listofreviews[-1]["rating"] == '4'

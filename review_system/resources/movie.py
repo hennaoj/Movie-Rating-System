@@ -106,6 +106,7 @@ class MovieItem(Resource):
         updatecount = Movie.query.filter_by(id=movie.id).update(updatedict)
         db.session.commit() 
         return Response(status=204)
+
     def delete(self, movie):
         Movie.query.filter_by(id=movie.id).delete()
         db.session.commit() 

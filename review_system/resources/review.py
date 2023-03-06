@@ -19,21 +19,28 @@ class ReviewCollection(Resource):
         return Response(json.dumps(json_reviews), 200)
     
     def post(self, movie):
-        if not request.json:
-            return UnsupportedMediaType
         try:
-            validate(request.json, Review.json_schema())
+            if not request.json:
+                return Response(status=415)
+            requestdict = json.loads(request.json)
+        except:
+            return Response(status=415)
+        try:
+            validate(requestdict, Review.json_schema())
         except ValidationError as error:
+            print(error)
             raise BadRequest(description=str(error)) from error
+
+        requestdict = json.loads(request.json)
 
         comment = None
         try:
-            comment = request.json["comment"]
+            comment = requestdict["comment"]
         except KeyError:
             pass
 
         review = Review(
-            rating=request.json["rating"],
+            rating=requestdict["rating"],
             comment=comment,
             date=datetime.now(),
             movie_id=movie.id,
