@@ -20,9 +20,7 @@ class ReviewCollection(Resource):
     
     def post(self, movie):
         try:
-            if not request.json:
-                return Response(status=415)
-            requestdict = json.loads(request.json)
+            requestdict = json.loads(request.data)
         except:
             return Response(status=415)
         try:
@@ -31,7 +29,7 @@ class ReviewCollection(Resource):
             print(error)
             raise BadRequest(description=str(error)) from error
 
-        requestdict = json.loads(request.json)
+        requestdict = json.loads(request.data)
 
         comment = None
         try:

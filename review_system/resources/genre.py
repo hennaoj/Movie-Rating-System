@@ -20,16 +20,14 @@ class GenreCollection(Resource):
     
     def post(self):
         try:
-            if not request.json:
-                return Response(status=415)
-            requestdict = json.loads(request.json)
+            requestdict = json.loads(request.data)
         except:
             return Response(status=415)
         try:
             validate(requestdict, Genre.json_schema())
         except ValidationError as error:
             raise BadRequest(description=str(error)) from error
-        genre = Genre(name=json.loads(request.json)["name"])
+        genre = Genre(name=json.loads(request.data)["name"])
         db.session.add(genre)
         db.session.commit()
         return Response(status=201, headers={

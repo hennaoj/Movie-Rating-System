@@ -18,9 +18,7 @@ class MovieCollection(Resource):
     
     def post(self):
         try:
-            if not request.json:
-                return Response(status=415)
-            requestdict = json.loads(request.json)
+            requestdict = json.loads(request.data)
         except:
             return Response(status=415)
         try:
@@ -29,7 +27,7 @@ class MovieCollection(Resource):
             print(error)
             raise BadRequest(description=str(error)) from error
         
-        requestdict = json.loads(request.json)
+        requestdict = json.loads(request.data)
 
         movie_genres = []
         try:
