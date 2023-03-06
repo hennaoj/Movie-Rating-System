@@ -6,6 +6,7 @@ from werkzeug.exceptions import NotFound, BadRequest, UnsupportedMediaType
 
 from review_system import db
 from review_system.models import Movie, Genre, Review
+from review_system.auth import check_api_key
 
 class GenreCollection(Resource):
 
@@ -18,6 +19,7 @@ class GenreCollection(Resource):
             })
         return Response(json.dumps(json_genres), 200)
     
+    @check_api_key
     def post(self):
         try:
             requestdict = json.loads(request.data)
