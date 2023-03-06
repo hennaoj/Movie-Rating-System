@@ -32,7 +32,6 @@ class Movie(db.Model):
             ratings = []
             for review in self.reviews:
                 ratings.append(float(review.rating))
-            print(ratings)
             if len(ratings) > 0:
                 self.average_rating = sum(ratings)/len(ratings)
             return()
