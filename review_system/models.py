@@ -193,3 +193,26 @@ class User(db.Model):
             "pattern": "(\\d{4})-(\\d{2})-(\\d{2})[T](\\d{2}):(\\d{2}):(\\d{2})[+](\\d{2}):(\\d{2})"
         }
         return schema
+    
+class ApiKey(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    key = db.Column(db.String(32), unique=True, nullable=False)
+
+    def Serialize(self):
+        apikeydict = {
+            "key": self.key
+        }
+        return apikeydict
+
+    @staticmethod
+    def json_schema():
+        schema = {
+            "type": "object",
+            "required": ["key", "user_id"]
+        }
+        props = schema["properties"] = {}
+        props["key"] = {
+            "description": "The API key",
+            "type": "string"
+        }
+        return schema

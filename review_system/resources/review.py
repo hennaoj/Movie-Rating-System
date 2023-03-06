@@ -7,6 +7,7 @@ from werkzeug.exceptions import NotFound, BadRequest, UnsupportedMediaType
 
 from review_system import db
 from review_system.models import Movie, User, Review
+from review_system.auth import check_api_key
 
 
 class ReviewCollection(Resource):
@@ -18,6 +19,7 @@ class ReviewCollection(Resource):
             json_reviews.append(Review.Serialize(review))
         return Response(json.dumps(json_reviews), 200)
     
+    @check_api_key
     def post(self, movie):
         try:
             requestdict = json.loads(request.data)
