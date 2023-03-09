@@ -53,9 +53,9 @@ coverage html
 ## Queries
 **Routes**
 - /api/movies/
-- /api/movies/{id}
+- /api/movies/{id}/
 - /api/movies/{id}/reviews/
-- /api/movies/{id}/reviews/{id}
+- /api/movies/{id}/reviews/{id}/
 - /api/genres/
 - /api/genres/{id}/
 
