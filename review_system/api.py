@@ -1,7 +1,7 @@
 from review_system.resources.movie import MovieCollection, MovieItem
 from review_system.resources.review import ReviewCollection, ReviewItem
 from review_system.resources.genre import GenreCollection, GenreItem
-from review_system.utils import MovieConverter, ReviewConverter, GenreConverter
+from review_system.utils import MovieConverter, GenreConverter
 
 def AddUrlMapConverters(app):
 	app.url_map.converters["movie"] = MovieConverter

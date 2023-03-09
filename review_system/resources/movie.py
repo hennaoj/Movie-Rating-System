@@ -1,11 +1,12 @@
+"""Movie resource module"""
 import json
 from jsonschema import validate, ValidationError
 from flask import Response, request, url_for
 from flask_restful import Resource
-from werkzeug.exceptions import NotFound, BadRequest, UnsupportedMediaType
+from werkzeug.exceptions import BadRequest
 
 from review_system import db
-from review_system.models import Movie, Genre, Review
+from review_system.models import Movie, Genre
 from review_system.auth import check_api_key
 
 class MovieCollection(Resource):
@@ -16,7 +17,7 @@ class MovieCollection(Resource):
         for movie in movies:
             json_movies.append(movie.Serialize())
         return Response(json.dumps(json_movies), 200)
-    
+
     @check_api_key
     def post(self):
         try:
@@ -28,7 +29,7 @@ class MovieCollection(Resource):
         except ValidationError as error:
             print(error)
             raise BadRequest(description=str(error)) from error
-        
+
         requestdict = json.loads(request.data)
 
         movie_genres = []
@@ -46,7 +47,7 @@ class MovieCollection(Resource):
                 else:
                     genre_to_add = Genre.query.filter_by(name=genre).first()
                 movie_genres.append(genre_to_add)
-            
+
         except KeyError:
             pass
 
@@ -66,7 +67,7 @@ class MovieItem(Resource):
 
     def get(self, movie):
         return Response(json.dumps(movie.Serialize()), 200)
-    
+
     def put(self, movie):
         try:
             if not request.json:
@@ -104,10 +105,10 @@ class MovieItem(Resource):
         if len(movie_genres) > 0:
             updatedict["genres"] = movie_genres
         updatecount = Movie.query.filter_by(id=movie.id).update(updatedict)
-        db.session.commit() 
+        db.session.commit()
         return Response(status=204)
 
     def delete(self, movie):
         Movie.query.filter_by(id=movie.id).delete()
-        db.session.commit() 
+        db.session.commit()
         return Response(status=200)

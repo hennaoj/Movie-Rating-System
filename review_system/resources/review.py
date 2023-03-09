@@ -1,24 +1,25 @@
+"""Review resource module"""
 import json
 from datetime import datetime
 from jsonschema import validate, ValidationError
 from flask import Response, request, url_for
 from flask_restful import Resource
-from werkzeug.exceptions import NotFound, BadRequest, UnsupportedMediaType
+from werkzeug.exceptions import BadRequest
 
 from review_system import db
-from review_system.models import Movie, User, Review
+from review_system.models import Review
 from review_system.auth import check_api_key
 
 
 class ReviewCollection(Resource):
-
+    """Review collection resource"""
     def get(self, movie):
         reviews = Review.query.filter_by(movie_id=movie.id)
         json_reviews = []
         for review in reviews:
             json_reviews.append(Review.Serialize(review))
         return Response(json.dumps(json_reviews), 200)
-    
+
     @check_api_key
     def post(self, movie):
         if not request.json:
@@ -54,17 +55,18 @@ class ReviewCollection(Resource):
         })
 
 class ReviewItem(Resource):
+    """Review item resource"""
     def get(self, movie, review):
         try:
             return Response(json.dumps(movie.reviews[review].Serialize()), 200)
         except:
             return Response(status=404)
-    
+
     def put(self, movie, review):
         pass
-    
+
     def delete(self, movie, review):
         review = movie.reviews[review]
         Review.query.filter_by(id=review.id).delete()
-        db.session.commit() 
+        db.session.commit()
         return Response(status=200)
