@@ -96,9 +96,6 @@ class MovieItem(Resource):
         updatedict = {}
         try:
             updatedict["title"] = requestdict["title"]
-        except:
-            pass
-        try:
             updatedict["release_year"] = requestdict["release_year"]
         except:
             pass

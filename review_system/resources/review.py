@@ -62,9 +62,6 @@ class ReviewItem(Resource):
         except:
             return Response(status=404)
 
-    def put(self, movie, review):
-        pass
-
     def delete(self, movie, review):
         review = movie.reviews[review]
         Review.query.filter_by(id=review.id).delete()

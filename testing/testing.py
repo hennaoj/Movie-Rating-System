@@ -42,6 +42,8 @@ class TestMovieCollection(object):
         newmovie =  {"title":"The Godfather 2", "release_year":1974, "description":"Part 2"}
         resp = client.post("/api/movies/", json=newmovie, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 201
+        resp = client.post("/api/movies/", json={"title": "The Godfather 2"}, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
+        assert resp.status_code == 400
         resp = client.get("/api/movies/")
         assert resp.status_code == 200
         listofmovies = json.loads(resp.data)
@@ -95,6 +97,11 @@ class TestGenreCollection(object):
         resp = client.post("/api/genres/", data=newgenre, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 415
 
+class TestGenreItem(object):
+    def test_get(self, client):
+        resp = client.get("/api/genres/1/")
+        assert resp.status_code == 200
+
 class TestReviewCollection(object):
     def test_get(self, client):
         resp = client.get("/api/movies/1/reviews/")
@@ -109,10 +116,11 @@ class TestReviewCollection(object):
         assert resp.status_code == 200
         movie = json.loads(resp.data)
         assert movie["average rating"] == "3.0"
-
         newreview = {"rating":4}
         resp = client.post("/api/movies/1/reviews/", json=newreview, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 201
+        resp = client.post("/api/movies/1/reviews/", json=newreview)
+        assert resp.status_code == 401
         resp = client.get("/api/movies/1/reviews/")
         assert resp.status_code == 200
         listofreviews = json.loads(resp.data)
@@ -122,7 +130,8 @@ class TestReviewCollection(object):
         assert resp.status_code == 200
         movie = json.loads(resp.data)
         assert movie["average rating"] == str(3 + 1/3)
-
+        resp = client.post("/api/movies/1/reviews/", json="", headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
+        assert resp.status_code == 415
         #test posting with invalid data
         badreview = {"rating":"four"}
         resp = client.post("/api/movies/1/reviews/", json=badreview, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})

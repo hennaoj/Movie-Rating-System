@@ -45,9 +45,3 @@ class GenreItem(Resource):
             movieslist.append(movie.title)
         moviesingenredict = {'genre': genre.name, 'movies': movieslist}
         return Response(json.dumps(moviesingenredict), 200)
-    
-    def put(self, genre):
-        pass
-    
-    def delete(self, genre):
-        pass
