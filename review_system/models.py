@@ -1,4 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
+'''Definitions for database models'''
 import click
 from flask.cli import with_appcontext
 from review_system import db
@@ -6,6 +6,7 @@ from review_system import db
 @click.command("init-db")
 @with_appcontext
 def init_db_command():
+    '''Click command to initialize a database'''
     db.create_all()
 
 # movies-genres many-to-many relationship table
@@ -15,11 +16,12 @@ movie_genre = db.Table("movie_genre",
 )
 
 class Movie(db.Model):
+    '''Class representing a movie'''
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(64), nullable=False)
     release_year = db.Column(db.Integer, nullable=False)
     description = db.Column(db.String(512))
-    average_rating = db.Column(db.Float) 
+    average_rating = db.Column(db.Float)
 
     # movie-genre relationship
     genres = db.relationship("Genre", secondary="movie_genre", back_populates="movies")
@@ -27,7 +29,8 @@ class Movie(db.Model):
     # one-to-many relationship with movie-reviews
     reviews = db.relationship("Review", back_populates="movie")
 
-    def UpdateRating(self):
+    def update_rating(self):
+        '''Calculates the average rating for a movie. Called when a new review is added'''
         try:
             ratings = []
             for review in self.reviews:
@@ -35,10 +38,11 @@ class Movie(db.Model):
             if len(ratings) > 0:
                 self.average_rating = sum(ratings)/len(ratings)
             return()
-        except:
+        except AttributeError:
             return()
 
-    def Serialize(self):
+    def serialize(self):
+        '''Transform data into dictionary format for JSON'''
         moviedict = {
             "title": self.title,
             "release year": str(self.release_year),
@@ -48,9 +52,10 @@ class Movie(db.Model):
             "reviews": ", ".join([str(review.rating) for review in self.reviews])
         }
         return moviedict
-        
+
     @staticmethod
     def json_schema():
+        '''JSON schema for validation'''
         schema = {
             "type": "object",
             "required": ["title", "release_year"]
@@ -81,13 +86,15 @@ class Movie(db.Model):
         return schema
 
 class Genre(db.Model):
+    '''Class representing a movie genre'''
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), unique=True, nullable=False)
 
     # many-to-many relationship with movies-genres
     movies = db.relationship("Movie", secondary="movie_genre", back_populates="genres")
 
-    def Serialize(self):
+    def serialize(self):
+        '''Transform data into dictionary format for JSON'''
         genredict = {
             "name": self.name
         }
@@ -95,6 +102,7 @@ class Genre(db.Model):
 
     @staticmethod
     def json_schema():
+        '''JSON schema for validation'''
         schema = {
             "type": "object",
             "required": ["name"]
@@ -107,6 +115,7 @@ class Genre(db.Model):
         return schema
 
 class Review(db.Model):
+    '''Class representing a movie review'''
     id = db.Column(db.Integer, primary_key=True)
     rating = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.String(512))
@@ -120,7 +129,8 @@ class Review(db.Model):
     # one-to-many relationship with user-reviews
     user = db.relationship("User", back_populates="reviews")
 
-    def Serialize(self):
+    def serialize(self):
+        '''Transform data into dictionary format for JSON'''
         reviewdict = {
             "rating": str(self.rating),
             "comment": self.comment,
@@ -132,6 +142,7 @@ class Review(db.Model):
 
     @staticmethod
     def json_schema():
+        '''JSON schema for validation'''
         schema = {
             "type": "object",
             "required": ["rating"]
@@ -155,6 +166,7 @@ class Review(db.Model):
         return schema
 
 class User(db.Model):
+    '''Class representing a movie reviewer'''
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(32), unique=True, nullable=False)
     age = db.Column(db.Integer, nullable=False)
@@ -164,8 +176,17 @@ class User(db.Model):
     # one-to-many relationship with user-reviews
     reviews = db.relationship("Review", back_populates="user")
 
+    def serialize(self):
+        '''Transform data into dictionary format for JSON'''
+        userdict = {
+            "username": str(self.username),
+            "gender": str(self.gender),
+            "account_creation_date": str(self.account_creation_date),
+        }
+        return userdict
     @staticmethod
     def json_schema():
+        '''JSON schema for validation'''
         schema = {
             "type": "object",
             "required": ["username", "age", "gender", "account_creation_date"]
@@ -193,12 +214,14 @@ class User(db.Model):
             "pattern": "(\\d{4})-(\\d{2})-(\\d{2})[T](\\d{2}):(\\d{2}):(\\d{2})[+](\\d{2}):(\\d{2})"
         }
         return schema
-    
+
 class ApiKey(db.Model):
+    '''Class representing api key used for authentication'''
     id = db.Column(db.Integer, primary_key=True)
     key = db.Column(db.String(32), unique=True, nullable=False)
 
-    def Serialize(self):
+    def serialize(self):
+        '''Transform data into dictionary format for JSON'''
         apikeydict = {
             "key": self.key
         }
@@ -206,6 +229,7 @@ class ApiKey(db.Model):
 
     @staticmethod
     def json_schema():
+        '''JSON schema for validation'''
         schema = {
             "type": "object",
             "required": ["key", "user_id"]

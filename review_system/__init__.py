@@ -1,3 +1,4 @@
+"""Flask-based review system for movies"""
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -6,25 +7,27 @@ from flask_restful import Api
 db = SQLAlchemy()
 
 def create_app(test_config=None):
+    '''Creates the flask application'''
     app = Flask(__name__, instance_relative_config=True)
     api_ = Api()
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(app.instance_path, "movie_rating_system.db")
+    dbpath = os.path.join(app.instance_path, "movie_rating_system.db")
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + dbpath
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    if test_config != None:
+    if test_config is not None:
         app.config.from_mapping(test_config)
     try:
         os.makedirs(app.instance_path)
     except OSError:
         pass
     db.init_app(app)
-    from . import models
+    from review_system import models
     app.cli.add_command(models.init_db_command)
-    from . import create_sample_data
+    from review_system import create_sample_data
     app.cli.add_command(create_sample_data.create_sample_data)
-    from . import create_sample_api_key
+    from review_system import create_sample_api_key
     app.cli.add_command(create_sample_api_key.create_sample_api_key)
-    from . import api
-    api.AddUrlMapConverters(app)
-    api.AddApiResources(api_)
+    from review_system import api
+    api.add_url_map_converters(app)
+    api.add_api_resources(api_)
     api_.init_app(app)
     return app

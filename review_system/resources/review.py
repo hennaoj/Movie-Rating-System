@@ -17,7 +17,7 @@ class ReviewCollection(Resource):
         reviews = Review.query.filter_by(movie_id=movie.id)
         json_reviews = []
         for review in reviews:
-            json_reviews.append(Review.Serialize(review))
+            json_reviews.append(Review.serialize(review))
         return Response(json.dumps(json_reviews), 200)
 
     @check_api_key
@@ -47,7 +47,7 @@ class ReviewCollection(Resource):
         #average update needs to be added
 
         db.session.add(review)
-        movie.UpdateRating()
+        movie.update_rating()
         db.session.commit()
 
         return Response(status=201, headers={
@@ -58,7 +58,7 @@ class ReviewItem(Resource):
     """Review item resource"""
     def get(self, movie, review):
         try:
-            return Response(json.dumps(movie.reviews[review].Serialize()), 200)
+            return Response(json.dumps(movie.reviews[review].serialize()), 200)
         except:
             return Response(status=404)
 

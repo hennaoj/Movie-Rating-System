@@ -1,38 +1,38 @@
+'''Miscellaneous utilities'''
 from werkzeug.exceptions import NotFound
 from werkzeug.routing import BaseConverter
 from review_system.models import Movie, Genre, Review
 
-
 class MovieConverter(BaseConverter):
-    
-    def to_python(self, movie_id):
-        db_movie = Movie.query.filter_by(id=movie_id).first()
+    '''Converter for movies'''
+    def to_python(self, value):
+        db_movie = Movie.query.filter_by(id=value).first()
         if db_movie is None:
             raise NotFound
         return db_movie
-        
-    def to_url(self, db_movie):
-        return str(db_movie.id)
+
+    def to_url(self, value):
+        return str(value.id)
 
 class ReviewConverter(BaseConverter):
-    
-    def to_python(self, review_id):
-        db_review = Review.query.filter_by(id=review_id).first()
+    '''Converter for reviews'''
+    def to_python(self, value):
+        db_review = Review.query.filter_by(id=value).first()
         if db_review is None:
             raise NotFound
         return db_review
-        
-    def to_url(self, db_review):
-        return str(db_review.id)
-    
+
+    def to_url(self, value):
+        return str(value.id)
+
 class GenreConverter(BaseConverter):
-    
-    def to_python(self, genre_id):
-        db_genre = Genre.query.filter_by(id=genre_id).first()
+    '''Converter for genres'''
+    def to_python(self, value):
+        db_genre = Genre.query.filter_by(id=value).first()
         if db_genre is None:
             raise NotFound
         return db_genre
-        
-    def to_url(self, db_genre):
-        return str(db_genre.id)
+
+    def to_url(self, value):
+        return str(value.id)
     

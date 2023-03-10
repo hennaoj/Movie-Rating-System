@@ -15,7 +15,7 @@ class MovieCollection(Resource):
         movies = Movie.query.all()
         json_movies = []
         for movie in movies:
-            json_movies.append(movie.Serialize())
+            json_movies.append(movie.serialize())
         return Response(json.dumps(json_movies), 200)
 
     @check_api_key
@@ -66,7 +66,7 @@ class MovieCollection(Resource):
 class MovieItem(Resource):
 
     def get(self, movie):
-        return Response(json.dumps(movie.Serialize()), 200)
+        return Response(json.dumps(movie.serialize()), 200)
 
     def put(self, movie):
         try:

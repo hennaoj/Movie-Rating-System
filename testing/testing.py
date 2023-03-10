@@ -4,8 +4,8 @@ import os
 import pytest
 import tempfile
 from review_system import create_app, db
-from review_system.create_sample_data import PopulateTestDb
-from review_system.create_sample_api_key import CreateSampleKey
+from review_system.create_sample_data import populate_test_db
+from review_system.create_sample_api_key import create_sample_key
 
 @pytest.fixture(scope="function")
 def app():
@@ -17,8 +17,8 @@ def app():
     app = create_app(config)
     with app.app_context():
         db.create_all()
-        PopulateTestDb()
-        CreateSampleKey()
+        populate_test_db()
+        create_sample_key()
         
     yield app
     
