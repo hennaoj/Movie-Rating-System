@@ -106,9 +106,9 @@ class TestReviewCollection(object):
     def test_get(self, client):
         resp = client.get("/api/movies/1/reviews/")
         assert resp.status_code == 200
-        listofreviews = json.loads(resp.data)
-        assert len(listofreviews) == 2
-        for item in listofreviews:
+        respbody = json.loads(resp.data)
+        assert len(respbody["items"]) == 2
+        for item in respbody["items"]:
             assert "rating" in item
             assert "date" in item
     def test_post(self, client):
@@ -123,9 +123,9 @@ class TestReviewCollection(object):
         assert resp.status_code == 401
         resp = client.get("/api/movies/1/reviews/")
         assert resp.status_code == 200
-        listofreviews = json.loads(resp.data)
-        assert len(listofreviews) == 3
-        assert listofreviews[-1]["rating"] == '4'
+        respbody = json.loads(resp.data)
+        assert len(respbody["items"]) == 3
+        assert respbody["items"][-1]["rating"] == '4'
         resp = client.get("/api/movies/1/")
         assert resp.status_code == 200
         movie = json.loads(resp.data)

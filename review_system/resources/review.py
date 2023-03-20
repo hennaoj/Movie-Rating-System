@@ -9,16 +9,26 @@ from werkzeug.exceptions import BadRequest
 from review_system import db
 from review_system.models import Review
 from review_system.auth import check_api_key
-
+from review_system.constants import *
+from review_system.utils import ReviewSystemBuilder
 
 class ReviewCollection(Resource):
     """Review collection resource"""
     def get(self, movie):
         reviews = Review.query.filter_by(movie_id=movie.id)
-        json_reviews = []
+
+        body = ReviewSystemBuilder()
+        body["items"] = []
+        body.add_control_add_review(movie)
+        body.add_control("self", url_for("reviewcollection", movie=movie))
+
         for review in reviews:
-            json_reviews.append(Review.serialize(review))
-        return Response(json.dumps(json_reviews), 200)
+            item = ReviewSystemBuilder(Review.serialize(review))
+            item.add_control("self", url_for("reviewitem",  movie=movie, review=review.id))
+            item.add_control("profile", MOVIE_PROFILE)
+            body["items"].append(item)
+
+        return Response(json.dumps(body), 200, mimetype=MASON)
 
     @check_api_key
     def post(self, movie):

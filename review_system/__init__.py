@@ -4,6 +4,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api
 
+from review_system.constants import *
+
 db = SQLAlchemy()
 
 def create_app(test_config=None):
@@ -30,4 +32,13 @@ def create_app(test_config=None):
     api.add_url_map_converters(app)
     api.add_api_resources(api_)
     api_.init_app(app)
+
+    @app.route(LINK_RELATIONS_URL)
+    def view_link_relations():
+        return "link relations"
+
+    @app.route("/profiles/<profile>/")
+    def view_profile(profile):
+        return "this is the {} profile".format(profile)
+
     return app
