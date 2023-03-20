@@ -40,7 +40,7 @@ Discussed REST principles and our API implementation, i.e. resources, testing an
 - Use encryption for storing keys and secrets module to compare strings in authentication
 - More tests for better coverage
 - Pylint fixes
-
+- Should not use db id in the uri's
 
 
 ## Meeting 4.
