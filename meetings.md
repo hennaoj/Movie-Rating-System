@@ -29,15 +29,17 @@ Discussed the database design and the model implementations. Overall the design 
 
 
 ## Meeting 3.
-* **DATE:**
-* **ASSISTANTS:**
+* **DATE:** 9.3.2023 15:30
+* **ASSISTANTS:** Mika Oja
 
 ### Minutes
-*Summary of what was discussed during the meeting*
+Discussed REST principles and our API implementation, i.e. resources, testing and authentication. Also checked the pylint results and line coverage.
 
 ### Action points
-*List here the actions points discussed with assistants*
-
+- PUT usage explanation to wiki (Uniform interface)
+- Use encryption for storing keys and secrets module to compare strings in authentication
+- More tests for better coverage
+- Pylint fixes
 
 
 
