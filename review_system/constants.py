@@ -1,3 +1,3 @@
-LINK_RELATIONS_URL = "/sensorhub/link-relations/"
+LINK_RELATIONS_URL = "/review_system/link-relations/"
 MOVIE_PROFILE = "/profiles/movie/"
 MASON = "application/vnd.mason+json"
