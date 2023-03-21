@@ -152,13 +152,13 @@ class ReviewSystemBuilder(MasonBuilder):
 class MovieConverter(BaseConverter):
     '''Converter for movies'''
     def to_python(self, value):
-        db_movie = Movie.query.filter_by(id=value).first()
+        db_movie = Movie.query.filter_by(uri_id=value).first()
         if db_movie is None:
             raise NotFound
         return db_movie
 
     def to_url(self, value):
-        return str(value.id)
+        return str(value.uri_id)
 
 class ReviewConverter(BaseConverter):
     '''Converter for reviews'''

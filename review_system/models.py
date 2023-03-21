@@ -22,6 +22,7 @@ class Movie(db.Model):
     release_year = db.Column(db.Integer, nullable=False)
     description = db.Column(db.String(512))
     average_rating = db.Column(db.Float)
+    uri_id = db.Column(db.String(64), nullable=False, unique=True)
 
     # movie-genre relationship
     genres = db.relationship("Genre", secondary="movie_genre", back_populates="movies")
@@ -82,6 +83,10 @@ class Movie(db.Model):
         props["genres"] = {
             "descriptions": "A list of genres the movie belongs to",
             "type": "array"
+        }
+        props["uri_id"] = {
+            "descriptions": "A unique identifier for the movie used in the urls",
+            "type": "string"
         }
         return schema
 

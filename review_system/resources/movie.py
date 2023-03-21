@@ -51,10 +51,22 @@ class MovieCollection(Resource):
         except KeyError:
             pass
 
+        movies = Movie.query.all()
+        uri_id = requestdict["title"].replace(" ", "").lower()
+
+        title_occurences = 0
+        for db_movie in movies:
+            if db_movie.uri_id == uri_id:
+                title_occurences += 1
+
+        if title_occurences != 0:
+            uri_id = uri_id + "_{}".format(title_occurences)
+
         movie = Movie(
             title=requestdict["title"],
             release_year=requestdict["release_year"],
-            genres=movie_genres
+            genres=movie_genres,
+            uri_id=uri_id
         )
 
         db.session.add(movie)

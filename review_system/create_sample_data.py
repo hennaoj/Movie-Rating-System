@@ -29,12 +29,14 @@ def populate_test_db():
          release_year=2008,
          description="The Dark Knight follows the story of Batman (Christian Bale) as he"\
                      " faces a new threat in the form of the Joker (Heath Ledger)"\
-                     ", a criminal mastermind with a plan to bring chaos to Gotham City. "
+                     ", a criminal mastermind with a plan to bring chaos to Gotham City. ",
+         uri_id="thedarkknight"
     )
 
     m_2 = Movie(
          title="The Godfather",
-         release_year=1972
+         release_year=1972,
+         uri_id = "thegodfather"
          )
 
     # add genres to the movies
