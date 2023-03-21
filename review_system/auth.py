@@ -1,15 +1,16 @@
 '''User authentication functionality'''
+import secrets
 from flask import request, Response
 from review_system.models import ApiKey
 
 def check_api_key(func):
     '''Check if user has valid API key'''
     def wrapper(*args, **kwargs):
-        keys = ApiKey.query.all()
-        json_keys = []
-        for key in keys:
-            json_keys.append(key.serialize()["key"])
-        if request.headers.get('API-Key') in json_keys:
-            return func(*args, **kwargs)
+        key = request.headers.get("API-Key")
+        if key is not None:
+            keys = ApiKey.query.all()
+            for db_key in keys:
+                if secrets.compare_digest(key, db_key.key):
+                    return func(*args, **kwargs)
         return Response(status=401)
     return wrapper
