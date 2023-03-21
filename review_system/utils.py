@@ -141,6 +141,14 @@ class ReviewSystemBuilder(MasonBuilder):
             schema = Review.json_schema()
         )
 
+    def add_control_delete_review(self, movie, review):
+        self.add_control(
+            "revsys:delete-review",
+            url_for("reviewitem", movie=movie, review=review),
+            method="delete",
+            title= "Delete this review from the database"
+        )
+
 class MovieConverter(BaseConverter):
     '''Converter for movies'''
     def to_python(self, value):

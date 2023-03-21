@@ -19,14 +19,17 @@ class ReviewCollection(Resource):
 
         body = ReviewSystemBuilder()
         body["items"] = []
+        body.add_namespace("revsys", LINK_RELATIONS_URL)
         body.add_control_add_review(movie)
         body.add_control("self", url_for("reviewcollection", movie=movie))
 
         for review in reviews:
+            i = 0
             item = ReviewSystemBuilder(Review.serialize(review))
-            item.add_control("self", url_for("reviewitem",  movie=movie, review=review.id))
-            item.add_control("profile", MOVIE_PROFILE)
+            item.add_control("self", url_for("reviewitem",  movie=movie, review=i))
+            item.add_control("profile", REVIEW_PROFILE)
             body["items"].append(item)
+            i+=1
 
         return Response(json.dumps(body), 200, mimetype=MASON)
 
@@ -67,8 +70,13 @@ class ReviewCollection(Resource):
 class ReviewItem(Resource):
     """Review item resource"""
     def get(self, movie, review):
+        body = ReviewSystemBuilder(movie.reviews[review].serialize())
+        body.add_namespace("revsys", LINK_RELATIONS_URL)
+        body.add_control_delete_review(movie, review)
+        body.add_control("self", url_for("reviewitem",  movie=movie, review=review))
+        body.add_control("profile", REVIEW_PROFILE)
         try:
-            return Response(json.dumps(movie.reviews[review].serialize()), 200)
+            return Response(json.dumps(body), 200, mimetype=MASON)
         except:
             return Response(status=404)
 
