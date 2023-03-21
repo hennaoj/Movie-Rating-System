@@ -23,8 +23,8 @@ class ReviewCollection(Resource):
         body.add_control_add_review(movie)
         body.add_control("self", url_for("reviewcollection", movie=movie))
 
+        i = 0
         for review in reviews:
-            i = 0
             item = ReviewSystemBuilder(Review.serialize(review))
             item.add_control("self", url_for("reviewitem",  movie=movie, review=i))
             item.add_control("profile", REVIEW_PROFILE)
