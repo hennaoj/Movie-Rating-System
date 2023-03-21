@@ -69,65 +69,6 @@ class MasonBuilder(dict):
 
         self["@controls"][ctrl_name] = kwargs
         self["@controls"][ctrl_name]["href"] = href
-        
-    def add_control_post(self, ctrl_name, title, href, schema):
-        """
-        Utility method for adding POST type controls. The control is
-        constructed from the method's parameters. Method and encoding are
-        fixed to "POST" and "json" respectively.
-        
-        : param str ctrl_name: name of the control (including namespace if any)
-        : param str href: target URI for the control
-        : param str title: human-readable title for the control
-        : param dict schema: a dictionary representing a valid JSON schema
-        """
-    
-        self.add_control(
-            ctrl_name,
-            href,
-            method="POST",
-            encoding="json",
-            title=title,
-            schema=schema
-        )
-
-    def add_control_put(self, title, href, schema):
-        """
-        Utility method for adding PUT type controls. The control is
-        constructed from the method's parameters. Control name, method and
-        encoding are fixed to "edit", "PUT" and "json" respectively.
-        
-        : param str href: target URI for the control
-        : param str title: human-readable title for the control
-        : param dict schema: a dictionary representing a valid JSON schema
-        """
-
-        self.add_control(
-            "edit",
-            href,
-            method="PUT",
-            encoding="json",
-            title=title,
-            schema=schema
-        )
-        
-    def add_control_delete(self, title, href):
-        """
-        Utility method for adding PUT type controls. The control is
-        constructed from the method's parameters. Control method is fixed to
-        "DELETE", and control's name is read from the class attribute
-        *DELETE_RELATION* which needs to be overridden by the child class.
-
-        : param str href: target URI for the control
-        : param str title: human-readable title for the control
-        """
-        
-        self.add_control(
-            "mumeta:delete",
-            href,
-            method="DELETE",
-            title=title,
-        )
 
 class ReviewSystemBuilder(MasonBuilder):
     
@@ -159,17 +100,6 @@ class MovieConverter(BaseConverter):
 
     def to_url(self, value):
         return str(value.uri_id)
-
-class ReviewConverter(BaseConverter):
-    '''Converter for reviews'''
-    def to_python(self, value):
-        db_review = Review.query.filter_by(id=value).first()
-        if db_review is None:
-            raise NotFound
-        return db_review
-
-    def to_url(self, value):
-        return str(value.id)
 
 class GenreConverter(BaseConverter):
     '''Converter for genres'''
