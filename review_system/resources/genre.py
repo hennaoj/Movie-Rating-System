@@ -1,15 +1,17 @@
+"""Genre resource module"""
 import json
+
 from jsonschema import validate, ValidationError
 from flask import Response, request, url_for
 from flask_restful import Resource
-from werkzeug.exceptions import NotFound, BadRequest, UnsupportedMediaType
+from werkzeug.exceptions import BadRequest
 
 from review_system import db
-from review_system.models import Movie, Genre, Review
+from review_system.models import Genre
 from review_system.auth import check_api_key
 
 class GenreCollection(Resource):
-
+    """Genre collection resource"""
     def get(self):
         genres = Genre.query.all()
         json_genres = []
@@ -38,7 +40,7 @@ class GenreCollection(Resource):
 
 
 class GenreItem(Resource):
-
+    """Genre item resource"""
     def get(self, genre):
         movieslist = []
         for movie in genre.movies:

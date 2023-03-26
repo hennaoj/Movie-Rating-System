@@ -1,5 +1,6 @@
 '''User authentication functionality'''
 import secrets
+
 from flask import request, Response
 from review_system.models import ApiKey
 

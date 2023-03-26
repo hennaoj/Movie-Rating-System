@@ -1,5 +1,6 @@
 """Movie resource module"""
 import json
+
 from jsonschema import validate, ValidationError
 from flask import Response, request, url_for
 from flask_restful import Resource
@@ -10,12 +11,14 @@ from review_system.models import Movie, Genre
 from review_system.auth import check_api_key
 
 class MovieCollection(Resource):
-
+    """Movie collection resource"""
     def get(self):
         movies = Movie.query.all()
         json_movies = []
+
         for movie in movies:
             json_movies.append(movie.serialize())
+
         return Response(json.dumps(json_movies), 200)
 
     @check_api_key
@@ -24,6 +27,7 @@ class MovieCollection(Resource):
             requestdict = json.loads(request.data)
         except:
             return Response(status=415)
+        
         try:
             validate(requestdict, Movie.json_schema())
         except ValidationError as error:
@@ -47,7 +51,6 @@ class MovieCollection(Resource):
                 else:
                     genre_to_add = Genre.query.filter_by(name=genre).first()
                 movie_genres.append(genre_to_add)
-
         except KeyError:
             pass
 
@@ -71,12 +74,13 @@ class MovieCollection(Resource):
 
         db.session.add(movie)
         db.session.commit()
+        
         return Response(status=201, headers={
             "Location": url_for("movieitem", movie=movie)
         })
 
 class MovieItem(Resource):
-
+    """Movie item resource"""
     def get(self, movie):
         return Response(json.dumps(movie.serialize()), 200)
 
