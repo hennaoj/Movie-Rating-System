@@ -40,10 +40,10 @@ def create_app(test_config=None):
 
     @app.route(LINK_RELATIONS_URL)
     def view_link_relations():
-        return "link relations"
+        return "Link relations"
 
     @app.route("/profiles/<profile>/")
     def view_profile(profile):
-        return "this is the {} profile".format(profile)
+        return f"This is the {profile} profile"
 
     return app

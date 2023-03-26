@@ -190,7 +190,7 @@ class User(db.Model):
             "account_creation_date": str(self.account_creation_date),
         }
         return userdict
-    
+
     @staticmethod
     def json_schema():
         '''JSON schema for validation'''

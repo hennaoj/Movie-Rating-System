@@ -71,7 +71,7 @@ class MasonBuilder(dict):
         self["@controls"][ctrl_name]["href"] = href
 
 class ReviewSystemBuilder(MasonBuilder):
-    
+    """ReviewSystem specific MasonBuilder"""
     def add_control_add_review(self, movie):
         self.add_control(
             "revsys:add-review",
