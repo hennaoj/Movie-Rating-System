@@ -22,6 +22,7 @@ class ReviewCollection(Resource):
         body.add_namespace("revsys", LINK_RELATIONS_URL)
         body.add_control_add_review(movie)
         body.add_control("self", url_for("reviewcollection", movie=movie))
+        body.add_control("movie", url_for("movieitem", movie=movie))
 
         for idx, review in enumerate(reviews):
             item = ReviewSystemBuilder(Review.serialize(review))
