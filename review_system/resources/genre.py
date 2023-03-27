@@ -15,6 +15,7 @@ from review_system.utils import ReviewSystemBuilder
 class GenreCollection(Resource):
     """Genre collection resource"""
     def get(self):
+
         genres = Genre.query.all()
         
         body = ReviewSystemBuilder()
