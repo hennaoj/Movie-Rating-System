@@ -75,6 +75,7 @@ class ReviewItem(Resource):
         body.add_control_delete_review(movie, review)
         body.add_control("self", url_for("reviewitem",  movie=movie, review=review))
         body.add_control("profile", REVIEW_PROFILE)
+        body.add_control("collection", url_for("reviewcollection", movie=movie))
         try:
             return Response(json.dumps(body), 200, mimetype=MASON)
         except:

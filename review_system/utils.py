@@ -90,6 +90,24 @@ class ReviewSystemBuilder(MasonBuilder):
             title= "Delete this review from the database"
         )
 
+    def add_control_add_movie(self):
+        self.add_control(
+            "revsys:add-movie",
+            url_for("moviecollection"),
+            method="post",
+            encoding="json",
+            title="Add a new movie to the movie collection",
+            schema = Movie.json_schema()
+        )
+
+    def add_control_delete_movie(self, movie):
+        self.add_control(
+            "revsys:delete-movie",
+            url_for("movieitem", movie=movie),
+            method="delete",
+            title= "Delete this movie from the database"
+        )
+
 class MovieConverter(BaseConverter):
     '''Converter for movies'''
     def to_python(self, value):

@@ -9,17 +9,27 @@ from werkzeug.exceptions import BadRequest
 from review_system import db
 from review_system.models import Movie, Genre
 from review_system.auth import check_api_key
+from review_system.constants import *
+from review_system.utils import ReviewSystemBuilder
 
 class MovieCollection(Resource):
     """Movie collection resource"""
     def get(self):
         movies = Movie.query.all()
-        json_movies = []
+        
+        body = ReviewSystemBuilder()
+        body["items"] = []
+        body.add_namespace("revsys", LINK_RELATIONS_URL)
+        body.add_control_add_movie()
+        body.add_control("self", url_for("moviecollection"))
 
         for movie in movies:
-            json_movies.append(movie.serialize())
+            item = ReviewSystemBuilder(Movie.serialize(movie))
+            item.add_control("self", url_for("movieitem", movie=movie))
+            item.add_control("profile", MOVIE_PROFILE)
+            body["items"].append(item)
 
-        return Response(json.dumps(json_movies), 200)
+        return Response(json.dumps(body), 200, mimetype=MASON)
 
     @check_api_key
     def post(self):
@@ -82,7 +92,16 @@ class MovieCollection(Resource):
 class MovieItem(Resource):
     """Movie item resource"""
     def get(self, movie):
-        return Response(json.dumps(movie.serialize()), 200)
+        body = ReviewSystemBuilder(movie.serialize())
+        body.add_namespace("revsys", LINK_RELATIONS_URL)
+        body.add_control_delete_movie(movie)
+        body.add_control("self", url_for("movieitem",  movie=movie))
+        body.add_control("profile", MOVIE_PROFILE)
+        body.add_control("collection", url_for("moviecollection"))
+        try:
+            return Response(json.dumps(body), 200, mimetype=MASON)
+        except:
+            return Response(status=404)
 
     def put(self, movie):
         try:
