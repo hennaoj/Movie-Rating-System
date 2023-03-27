@@ -1,8 +1,8 @@
-import requests
 import json
 import os
 import pytest
 import tempfile
+
 from review_system import create_app, db
 from review_system.create_sample_data import populate_test_db
 from review_system.create_sample_api_key import create_sample_key
@@ -34,15 +34,15 @@ class TestMovieCollection(object):
         resp = client.get("/api/movies/")
         assert resp.status_code == 200
 
-        listofmovies = json.loads(resp.data)
-        assert len(listofmovies["items"]) == 2
-        for item in listofmovies["items"]:
+        resp_body = json.loads(resp.data)
+        assert len(resp_body["items"]) == 2
+        for item in resp_body["items"]:
             assert "title" in item
             assert "release year" in item
 
     def test_post(self, client):
-        newmovie =  {"title":"The Godfather 2", "release_year":1974, "description":"Part 2"}
-        resp = client.post("/api/movies/", json=newmovie, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
+        new_movie =  {"title":"The Godfather 2", "release_year":1974, "description":"Part 2"}
+        resp = client.post("/api/movies/", json=new_movie, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 201
 
         resp = client.post("/api/movies/", json={"title": "The Godfather 2"}, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
@@ -54,8 +54,8 @@ class TestMovieCollection(object):
         listofmovies = json.loads(resp.data)
         assert len(listofmovies) == 3
 
-        newmovie =  {"title":"The Godfather 2", "release_year":"1974", "description":"Part 2"}
-        resp = client.post("/api/movies/", data=newmovie, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
+        new_movie =  {"title":"The Godfather 2", "release_year":"1974", "description":"Part 2"}
+        resp = client.post("/api/movies/", data=new_movie, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 415
 
 class TestMovieItem(object):
@@ -69,15 +69,15 @@ class TestMovieItem(object):
         assert resp.status_code == 200
         assert json.loads(resp.data)["release year"] == "2008"
 
-        editedmovie =  {"title":"The Dark Knight", "release_year":2009}
-        resp = client.put("/api/movies/thedarkknight/", json=json.dumps(editedmovie))
+        edited_movie =  {"title":"The Dark Knight", "release_year":2009}
+        resp = client.put("/api/movies/thedarkknight/", json=json.dumps(edited_movie))
         assert resp.status_code == 204
         
         resp = client.get("/api/movies/thedarkknight/")
         assert resp.status_code == 200
         assert json.loads(resp.data)["release year"] == "2009"
 
-        resp = client.post("/api/movies/", data=editedmovie, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
+        resp = client.post("/api/movies/", data=edited_movie, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 415
 
     def test_delete(self, client):
@@ -96,24 +96,23 @@ class TestGenreCollection(object):
         resp = client.get("/api/genres/")
         assert resp.status_code == 200
 
-        listofgenres = json.loads(resp.data)
-        respbody = json.loads(resp.data)
-        assert len(respbody["items"]) == 3
-        for item in respbody["items"]:
+        resp_body = json.loads(resp.data)
+        assert len(resp_body["items"]) == 3
+        for item in resp_body["items"]:
             assert "name" in item
 
     def test_post(self, client):
-        newgenre =  {"name":"Horror"}
-        resp = client.post("/api/genres/", json=newgenre, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
+        new_genre =  {"name":"Horror"}
+        resp = client.post("/api/genres/", json=new_genre, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 201
 
         resp = client.get("/api/genres/")
         assert resp.status_code == 200
 
-        listofgenres = json.loads(resp.data)
-        assert len(listofgenres["items"]) == 4
+        resp_body = json.loads(resp.data)
+        assert len(resp_body["items"]) == 4
 
-        resp = client.post("/api/genres/", data=newgenre, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
+        resp = client.post("/api/genres/", data=new_genre, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 415
 
 class TestGenreItem(object):
@@ -126,9 +125,9 @@ class TestReviewCollection(object):
         resp = client.get("/api/movies/thedarkknight/reviews/")
         assert resp.status_code == 200
 
-        respbody = json.loads(resp.data)
-        assert len(respbody["items"]) == 2
-        for item in respbody["items"]:
+        resp_body = json.loads(resp.data)
+        assert len(resp_body["items"]) == 2
+        for item in resp_body["items"]:
             assert "rating" in item
             assert "date" in item
 
@@ -139,19 +138,19 @@ class TestReviewCollection(object):
         movie = json.loads(resp.data)
         assert movie["average rating"] == "3.0"
 
-        newreview = {"rating":4}
-        resp = client.post("/api/movies/thedarkknight/reviews/", json=newreview, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
+        new_review = {"rating":4}
+        resp = client.post("/api/movies/thedarkknight/reviews/", json=new_review, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 201
 
-        resp = client.post("/api/movies/thedarkknight/reviews/", json=newreview)
+        resp = client.post("/api/movies/thedarkknight/reviews/", json=new_review)
         assert resp.status_code == 401
 
         resp = client.get("/api/movies/thedarkknight/reviews/")
         assert resp.status_code == 200
 
-        respbody = json.loads(resp.data)
-        assert len(respbody["items"]) == 3
-        assert respbody["items"][-1]["rating"] == '4'
+        resp_body = json.loads(resp.data)
+        assert len(resp_body["items"]) == 3
+        assert resp_body["items"][-1]["rating"] == '4'
 
         resp = client.get("/api/movies/thedarkknight/")
         assert resp.status_code == 200
@@ -163,8 +162,8 @@ class TestReviewCollection(object):
         assert resp.status_code == 415
         
         #test posting with invalid data
-        badreview = {"rating":"four"}
-        resp = client.post("/api/movies/thedarkknight/reviews/", json=badreview, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
+        bad_review = {"rating":"four"}
+        resp = client.post("/api/movies/thedarkknight/reviews/", json=bad_review, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 400
 
 class TestReviewItem(object):
