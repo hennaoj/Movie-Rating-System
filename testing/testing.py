@@ -97,8 +97,9 @@ class TestGenreCollection(object):
         assert resp.status_code == 200
 
         listofgenres = json.loads(resp.data)
-        assert len(listofgenres) == 3
-        for item in listofgenres:
+        respbody = json.loads(resp.data)
+        assert len(respbody["items"]) == 3
+        for item in respbody["items"]:
             assert "name" in item
 
     def test_post(self, client):

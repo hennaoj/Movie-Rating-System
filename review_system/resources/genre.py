@@ -9,17 +9,26 @@ from werkzeug.exceptions import BadRequest
 from review_system import db
 from review_system.models import Genre
 from review_system.auth import check_api_key
+from review_system.constants import *
+from review_system.utils import ReviewSystemBuilder
 
 class GenreCollection(Resource):
     """Genre collection resource"""
     def get(self):
         genres = Genre.query.all()
-        json_genres = []
+        
+        body = ReviewSystemBuilder()
+        body["items"] = []
+        body.add_namespace("revsys", LINK_RELATIONS_URL)
+        body.add_control_add_genre()
+        body.add_control("self", url_for("genrecollection"))
+
         for genre in genres:
-            json_genres.append({
-                "name": genre.name
-            })
-        return Response(json.dumps(json_genres), 200)
+            item = ReviewSystemBuilder(genre.serialize())
+            item.add_control("self", url_for("genreitem", genre=genre))
+            body["items"].append(item)
+
+        return Response(json.dumps(body), 200, mimetype=MASON)
     
     @check_api_key
     def post(self):

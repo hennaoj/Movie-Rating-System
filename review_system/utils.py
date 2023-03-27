@@ -108,6 +108,16 @@ class ReviewSystemBuilder(MasonBuilder):
             title= "Delete this movie from the database"
         )
 
+    def add_control_add_genre(self):
+        self.add_control(
+            "revsys:add-genre",
+            url_for("genrecollection"),
+            method="post",
+            encoding="json",
+            title="Add a new genre to the database",
+            schema = Genre.json_schema()
+        )
+
 class MovieConverter(BaseConverter):
     '''Converter for movies'''
     def to_python(self, value):
