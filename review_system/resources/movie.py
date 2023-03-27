@@ -98,6 +98,7 @@ class MovieItem(Resource):
         body.add_control("self", url_for("movieitem",  movie=movie))
         body.add_control("profile", MOVIE_PROFILE)
         body.add_control("collection", url_for("moviecollection"))
+        body.add_control("reviews", url_for("reviewcollection", movie=movie))
         try:
             return Response(json.dumps(body), 200, mimetype=MASON)
         except:
