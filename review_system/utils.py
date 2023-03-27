@@ -108,6 +108,16 @@ class ReviewSystemBuilder(MasonBuilder):
             title= "Delete this movie from the database"
         )
 
+    def add_control_edit_movie(self, movie):
+        self.add_control(
+            "revsys:edit-movie",
+            url_for("movieitem", movie=movie),
+            method="put",
+            encoding="json",
+            title= "Edit the movie's information in the database",
+            schema = Movie.json_schema()
+        )
+
     def add_control_add_genre(self):
         self.add_control(
             "revsys:add-genre",

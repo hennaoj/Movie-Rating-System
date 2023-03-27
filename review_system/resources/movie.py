@@ -95,6 +95,7 @@ class MovieItem(Resource):
         body = ReviewSystemBuilder(movie.serialize())
         body.add_namespace("revsys", LINK_RELATIONS_URL)
         body.add_control_delete_movie(movie)
+        body.add_control_edit_movie(movie)
         body.add_control("self", url_for("movieitem",  movie=movie))
         body.add_control("profile", MOVIE_PROFILE)
         body.add_control("collection", url_for("moviecollection"))
