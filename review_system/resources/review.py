@@ -23,13 +23,11 @@ class ReviewCollection(Resource):
         body.add_control_add_review(movie)
         body.add_control("self", url_for("reviewcollection", movie=movie))
 
-        i = 0
-        for review in reviews:
+        for idx, review in enumerate(reviews):
             item = ReviewSystemBuilder(Review.serialize(review))
-            item.add_control("self", url_for("reviewitem",  movie=movie, review=i))
+            item.add_control("self", url_for("reviewitem",  movie=movie, review=idx))
             item.add_control("profile", REVIEW_PROFILE)
             body["items"].append(item)
-            i+=1
 
         return Response(json.dumps(body), 200, mimetype=MASON)
 
