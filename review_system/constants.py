@@ -1,5 +1,6 @@
 """Constants"""
 LINK_RELATIONS_URL = "/review_system/link-relations/"
 MOVIE_PROFILE = "/profiles/movie/"
+GENRE_PROFILE = "/profiles/genre/"
 REVIEW_PROFILE = "/profiles/review/"
 MASON = "application/vnd.mason+json"

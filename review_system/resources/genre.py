@@ -51,8 +51,15 @@ class GenreCollection(Resource):
 class GenreItem(Resource):
     """Genre item resource"""
     def get(self, genre):
+        body = ReviewSystemBuilder(genre.serialize())
+        body.add_namespace("revsys", LINK_RELATIONS_URL)
+        body.add_control("self", url_for("genreitem",  genre=genre))
+        body.add_control("profile", GENRE_PROFILE)
+        body.add_control("collection", url_for("genrecollection"))
+
         movieslist = []
         for movie in genre.movies:
             movieslist.append(movie.title)
-        moviesingenredict = {'genre': genre.name, 'movies': movieslist}
-        return Response(json.dumps(moviesingenredict), 200)
+        body["movies"] = movieslist
+        
+        return Response(json.dumps(body), 200, mimetype=MASON)
