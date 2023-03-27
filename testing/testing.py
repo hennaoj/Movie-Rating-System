@@ -35,8 +35,8 @@ class TestMovieCollection(object):
         assert resp.status_code == 200
 
         listofmovies = json.loads(resp.data)
-        assert len(listofmovies) == 2
-        for item in listofmovies:
+        assert len(listofmovies["items"]) == 2
+        for item in listofmovies["items"]:
             assert "title" in item
             assert "release year" in item
 
@@ -111,7 +111,7 @@ class TestGenreCollection(object):
         assert resp.status_code == 200
 
         listofgenres = json.loads(resp.data)
-        assert len(listofgenres) == 4
+        assert len(listofgenres["items"]) == 4
 
         resp = client.post("/api/genres/", data=newgenre, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 415
