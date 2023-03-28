@@ -1,7 +1,7 @@
 '''Functionality to create sample data for testing purposes'''
-from datetime import datetime
-
 import click
+
+from datetime import datetime
 from flask.cli import with_appcontext
 from review_system import db
 from review_system.models import Movie, User, Genre, Review

@@ -24,7 +24,7 @@ components:
       name: review
       required: true
       schema:
-        type: int
+        type: integer
   schemas:
     Genre:
       properties:
@@ -43,7 +43,7 @@ components:
           description: Summary/description of the movie
           type: string
         genres:
-          descriptions: A list of genres the movie belongs to
+          description: A list of genres the movie belongs to
           type: array
         release_year:
           description: The release year of the movie
@@ -54,7 +54,7 @@ components:
           description: Title of the movie
           type: string
         uri_id:
-          descriptions: A unique identifier for the movie used in the urls
+          description: A unique identifier for the movie used in the urls
           type: string
       required:
       - title
