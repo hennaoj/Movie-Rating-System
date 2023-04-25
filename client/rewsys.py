@@ -26,6 +26,7 @@ def print_movie_selection_menu(sorted_movies):
     index = input("Enter the number of the movie: ")
     try:
         movie = sorted_movies[int(index)]
+        #test
     except ValueError:
         print("Please input an integer value!")
         print_movie_selection_menu(sorted_movies)
