@@ -44,14 +44,17 @@ Discussed REST principles and our API implementation, i.e. resources, testing an
 
 
 ## Meeting 4.
-* **DATE:**
-* **ASSISTANTS:**
+* **DATE:** 20.4.2023
+* **ASSISTANTS:** Iván Sánchez Milara
 
 ### Minutes
-*Summary of what was discussed during the meeting*
+The hypermedia design and implementation as well as the documentation yml file.
 
 ### Action points
-*List here the actions points discussed with assistants*
+- Genres are currently isolated, they need to be connected
+- Fix the issue in the .yml file
+- Fix the wiki diagram
+- Add more response examples and fix some of the useed response codes
 
 
 
