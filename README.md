@@ -17,20 +17,23 @@ pip install -r requirements.txt
 ```
 
 **Create sample data for testing**
+
+
+on Windows:
 ```
-while in Movie-Rating-System folder:
-  on Windows:
-    set FLASK_APP=review_system
-    set FLASK_ENV=development
-    flask init-db
-    flask create-sample-data
-    flask create-sample-api-key
-  on Linux:
-    export FLASK_APP=review_system
-    export FLASK_ENV=development
-    flask init-db
-    flask create-sample-data
-    flask create-sample-api-key
+set FLASK_APP=review_system
+set FLASK_ENV=development
+flask init-db
+flask create-sample-data
+flask create-sample-api-key
+```
+on Linux:
+```
+export FLASK_APP=review_system
+export FLASK_ENV=development
+flask init-db
+flask create-sample-data
+flask create-sample-api-key
 ```
 
 **Run API**

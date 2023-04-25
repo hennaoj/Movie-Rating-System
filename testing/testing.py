@@ -117,7 +117,7 @@ class TestGenreCollection(object):
 
 class TestGenreItem(object):
     def test_get(self, client):
-        resp = client.get("/api/movies/genres/Action/")
+        resp = client.get("/api/movies/genres/action/")
         assert resp.status_code == 200
 
 class TestReviewCollection(object):

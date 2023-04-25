@@ -1,0 +1,317 @@
+---
+openapi: 3.0.3
+servers:
+- url: /api
+components:
+  parameters:
+    movie:
+      description: Name of the movie
+      in: path
+      name: movie
+      required: true
+      schema:
+        type: string
+    genre:
+      description: Name of the genre
+      in: path
+      name: genre
+      required: true
+      schema:
+        type: string
+    review:
+      description: Movie-relative id of review
+      in: path
+      name: review
+      required: true
+      schema:
+        type: integer
+  schemas:
+    Genre:
+      properties:
+        name:
+          description: Name of the genre
+          type: string
+      required:
+      - name
+      type: object
+    Movie:
+      properties:
+        average_rating:
+          description: Average rating based on movie reviews
+          type: integer
+        description:
+          description: Summary/description of the movie
+          type: string
+        genres:
+          description: A list of genres the movie belongs to
+          type: array
+        release_year:
+          description: The release year of the movie
+          maximum: 2023
+          minimum: 1888
+          type: integer
+        title:
+          description: Title of the movie
+          type: string
+        uri_id:
+          description: A unique identifier for the movie used in the urls
+          type: string
+      required:
+      - title
+      - release_year
+      type: object
+    Review:
+      properties:
+        comment:
+          description: Written review of the movie
+          type: string
+        date:
+          description: The date/time the review was added
+          pattern: (\d{4})-(\d{2})-(\d{2})[T](\d{2}):(\d{2}):(\d{2})[+](\d{2}):(\d{2})
+          type: string
+        rating:
+          description: A 1-5 rating of the movie
+          maximum: 5
+          minimum: 1
+          type: integer
+      required:
+      - rating
+      type: object
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      name: API-Key
+      in: header
+info:
+  title: Movie review system
+  version: 0.0.1
+  description: A system that allows you to post and view reviews for different movies
+  contact:
+    url: https://github.com/hennaoj/Movie-Rating-System
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+paths:
+  /genres/:
+    get:
+      description: Get the list of all genres
+      responses:
+        '200':
+          description: List of all genre names
+          content:
+            application/json:
+              example:
+              - name: Action
+              - name: Drama
+    post:
+      description: Add a new genre
+      requestBody:
+        description: JSON document that contains name of new genre
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Genre'
+            example:
+              name: Horror
+      responses:
+        '201':
+          description: New genre was added
+          headers:
+            Location: 
+              description: URI of the new genres collection
+              schema: 
+                type: string
+        '400':
+          description: Failed to validate request body
+        '415':
+          description: Wrong media type was used
+  /genres/{genre}/:
+    parameters:
+    - $ref: '#/components/parameters/genre'
+    get:
+      description: Movies in specific genre
+      responses:
+        '200':
+          description: All movies belonging to the genre
+          content:
+            application/json:
+              example:
+              - title: The Dark Knight
+                release year: 2008
+                description: Batman movie
+                average rating: 2.66666 
+                genres: "Action, Crime"
+                Reviews: "3, 4, 1"
+              - title: The Godfather
+                release year: 1972
+                description: null
+                genres: "Drama, Crime"
+                Reviews: null
+        '404':
+          description: The genre was not found
+  /movies/:
+    get:
+      description: Get the list of all movies
+      responses:
+        '200':
+          description: List of all movies
+          content:
+            application/json:
+              example:
+              - title: The Dark Knight
+                release year: 2008
+                description: Batman movie
+                average rating: 2.66666 
+                genres: "Action, Crime"
+                Reviews: "3, 4, 1"
+              - title: The Godfather
+                release year: 1972
+                description: null
+                average rating:  null
+                genres: "Drama, Crime"
+                Reviews: null
+              - title: Forrest gump
+                release year: 1994
+                description: A man runs
+                average rating: 3.5 
+                genres: "Comedy, Drama"
+                Reviews: "4, 3, 2, 5"     
+    post:
+      description: Add a new genre
+      requestBody:
+        description: JSON document that contains name of new genre
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Movie'
+            example:
+                title: Forrest gump
+                release_year: 1994
+      responses:
+        '201':
+          description: New movie was added
+          headers:
+            Location: 
+              description: URI of the new movie, based on movie name. 
+              schema: 
+                type: string
+        '400':
+          description: Failed to validate request body
+        '415':
+          description: Wrong media type was used
+  /movies/{movie}/:
+    parameters:
+    - $ref: '#/components/parameters/movie'
+    get:
+      description: Get specific movie
+      responses:
+        '200':
+          description: Movie was found
+          content:
+            application/json:
+              example:
+                title: The Dark Knight
+                release year: 2008
+                description: Batman movie
+                average rating: 2.66666 
+                genres: "Action, Crime"
+                Reviews: "3, 4, 1"
+        '404':
+          description: The movie was not found
+    put:
+      description: Edit specific movie's information
+      requestBody:
+        description: JSON document that contains new data for the movie
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Movie'
+            example:
+              title: The Dark Knight
+              release year: 2009
+      responses:
+        '204':
+          description: The movie's attributes were updated successfully
+        '400':
+          description: Invalid request body
+        '404':
+          description: The movie was not found
+        '415':
+          description: Wrong media type was used
+    delete:
+     description: Delete the specified movie
+     responses:
+       '200':
+         description: The movie was successfully deleted
+       '404':
+         description: The movie was not found
+  /movies/{movie}/reviews/:
+    parameters:
+    - $ref: '#/components/parameters/movie'
+    get:
+      description: Get reviews for a specific movie
+      responses:
+        '200':
+          description: Movie was found
+          content:
+            application/json:
+              example:
+              - rating: 3
+                comment: "ok movie"
+                date: "2023-03-27 20:10:59.311191"
+                movie: "The Dark Knight"
+                user: "Reviewer123"
+              - rating: 1
+                comment: "bad movie"
+                date: "2023-04-27 20:10:59.311191"
+                movie: "The Dark Knight"
+                user: "Reviewer321"
+
+        '404':
+          description: Movie was not found
+    post:
+      description: Add a review to movie
+      requestBody:
+        description: JSON document that contains the review
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Review'
+            example:
+              rating: 2
+              comment: "Not the best"
+      responses:
+        '201':
+          description: The review was added
+        '400':
+          description: Invalid request body
+        '404':
+          description: The movie was not found
+        '415':
+          description: Wrong media type was used
+  /movies/{movie}/reviews/{review}:
+    parameters:
+    - $ref: '#/components/parameters/movie'
+    - $ref: '#/components/parameters/review'
+    get:
+      description: Get a specific review based on id
+      responses:
+        '200':
+          description: Review was found
+          content:
+            application/json:
+              example:
+                rating: 1
+                comment: "bad movie"
+                date: "2023-04-27 20:10:59.311191"
+                movie: "The Dark Knight"
+                user: "Reviewer321"
+        '404':
+          description: Review was not found
+    delete:
+     description: Delete the specified review
+     responses:
+       '200':
+         description: The review was successfully deleted
+       '404':
+         description: The review was not found
