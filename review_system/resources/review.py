@@ -80,6 +80,7 @@ class ReviewItem(Resource):
         except:
             return Response(status=404)
 
+    @check_api_key
     def delete(self, movie, review):
         review = movie.reviews[review]
         Review.query.filter_by(id=review.id).delete()

@@ -142,10 +142,10 @@ class MovieConverter(BaseConverter):
 class GenreConverter(BaseConverter):
     '''Converter for genres'''
     def to_python(self, value):
-        db_genre = Genre.query.filter_by(id=value).first()
+        db_genre = Genre.query.filter_by(name=value).first()
         if db_genre is None:
             raise NotFound
         return db_genre
 
     def to_url(self, value):
-        return str(value.id)
+        return str(value.name)

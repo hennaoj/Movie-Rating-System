@@ -22,6 +22,7 @@ class MovieCollection(Resource):
         body.add_namespace("revsys", LINK_RELATIONS_URL)
         body.add_control_add_movie()
         body.add_control("self", url_for("moviecollection"))
+        body.add_control("genres", url_for("genrecollection"))
 
         for movie in movies:
             item = ReviewSystemBuilder(Movie.serialize(movie))
@@ -105,6 +106,7 @@ class MovieItem(Resource):
         except:
             return Response(status=404)
 
+    @check_api_key
     def put(self, movie):
         try:
             if not request.json:
@@ -142,6 +144,7 @@ class MovieItem(Resource):
         db.session.commit()
         return Response(status=204)
 
+    @check_api_key
     def delete(self, movie):
         Movie.query.filter_by(id=movie.id).delete()
         db.session.commit()

@@ -15,5 +15,5 @@ def add_api_resources(api):
     api.add_resource(MovieItem, "/api/movies/<movie:movie>/")
     api.add_resource(ReviewCollection, "/api/movies/<movie:movie>/reviews/")
     api.add_resource(ReviewItem, "/api/movies/<movie:movie>/reviews/<int:review>/")
-    api.add_resource(GenreCollection, "/api/genres/")
-    api.add_resource(GenreItem, "/api/genres/<genre:genre>/")
+    api.add_resource(GenreCollection, "/api/movies/genres/")
+    api.add_resource(GenreItem, "/api/movies/genres/<genre:genre>/")
