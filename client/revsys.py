@@ -133,6 +133,10 @@ def view_movies_in_genre(genre):
     elif choice == "y":
         print_movie_selection_menu(sorted_movies)
 
+def search_for_movie():
+    print()
+    keyword = input("Search from movie titles: ")
+
 def print_main_menu(body):
     print("\nPlease make your choice!\n")
     print("1 = list of the movies in the database")
