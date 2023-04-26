@@ -26,7 +26,12 @@ class Movie(db.Model):
     uri_id = db.Column(db.String(64), nullable=False, unique=True)
 
     # movie-genre relationship
-    genres = db.relationship("Genre", secondary="movie_genre", back_populates="movies",cascade="all, delete")
+    genres = db.relationship(
+        "Genre",
+        secondary="movie_genre",
+        back_populates="movies",
+        cascade="all, delete"
+    )
 
     # one-to-many relationship with movie-reviews
     reviews = db.relationship("Review", back_populates="movie")
@@ -97,7 +102,12 @@ class Genre(db.Model):
     name = db.Column(db.String(32), unique=True, nullable=False)
 
     # many-to-many relationship with movies-genres
-    movies = db.relationship("Movie", secondary="movie_genre", back_populates="genres",cascade="all, delete")
+    movies = db.relationship(
+        "Movie",
+        secondary="movie_genre",
+        back_populates="genres",
+        cascade="all, delete"
+    )
 
     def serialize(self):
         '''Transform data into dictionary format for JSON'''

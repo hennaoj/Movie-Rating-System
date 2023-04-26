@@ -53,7 +53,7 @@ def list_genres(body):
 
     print_main_menu(body)
 
-def print_movie_selection_menu(sorted_movies):
+def print_movie_selection_menu(movies):
     '''
     Prints the menu for selecting a movie to show more information
     about and handles incorrect inputs.
@@ -61,14 +61,14 @@ def print_movie_selection_menu(sorted_movies):
     print()
     index = input("Enter the number of the movie: ")
     try:
-        movie = sorted_movies[int(index)]
+        movie = movies[int(index)]
         view_movie_info(movie)
     except ValueError:
         print("Please input an integer value!")
-        print_movie_selection_menu(sorted_movies)
+        print_movie_selection_menu(movies)
     except IndexError:
         print("The number you gave does not match a movie!")
-        print_movie_selection_menu(sorted_movies)
+        print_movie_selection_menu(movies)
 
 def print_genre_selection_menu(sorted_genres):
     '''
@@ -148,7 +148,25 @@ def search_for_movie(body):
     '''
     print()
     keyword = input("Enter keyword to be searched from movie titles: ")
-    print(keyword)
+    sorted_movies = sorted(body["items"], key=lambda d: d['title'])
+
+    print()
+
+    filtered_movies = []
+    i = 0
+    for movie in sorted_movies:
+        if keyword.lower() in movie["title"].lower():
+            print(i, movie["title"])
+            filtered_movies.append(movie)
+            i+=1
+
+    print()
+    choice = input("Do you want view more information on one of the movies? (y/n) ")
+
+    if choice == "n":
+        print_main_menu(body)
+    elif choice == "y":
+        print_movie_selection_menu(filtered_movies)
 
 def print_main_menu(body):
     '''

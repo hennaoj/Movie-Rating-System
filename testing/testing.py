@@ -54,9 +54,15 @@ class TestMovieCollection(object):
         listofmovies = json.loads(resp.data)
         assert len(listofmovies) == 3
 
+        #testing invalid release year
         new_movie =  {"title":"The Godfather 2", "release_year":"1974", "description":"Part 2"}
         resp = client.post("/api/movies/", data=new_movie, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 415
+
+        #testing adding a movie with the same name
+        new_movie =  {"title":"The Godfather 2", "release_year":1974, "description":"Part 2"}
+        resp = client.post("/api/movies/", json=new_movie, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
+        assert resp.status_code == 201
 
 class TestMovieItem(object):
     def test_get(self, client):
@@ -70,7 +76,7 @@ class TestMovieItem(object):
         assert json.loads(resp.data)["release year"] == "2008"
 
         edited_movie =  {"title":"The Dark Knight", "release_year":2009}
-        resp = client.put("/api/movies/thedarkknight/", json=json.dumps(edited_movie), headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
+        resp = client.put("/api/movies/thedarkknight/", json=edited_movie, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 204
         
         resp = client.get("/api/movies/thedarkknight/")
@@ -79,6 +85,10 @@ class TestMovieItem(object):
 
         resp = client.post("/api/movies/", data=edited_movie, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 415
+
+        #movie_with_genres = {"title":"The Dark Knight", "release_year":2009, "genres": ["Adventure", "Scifi"]}
+        #resp = client.post("/api/movies/", json=movie_with_genres, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
+        #assert resp.status_code == 204
 
     def test_delete(self, client):
         resp = client.get("/api/movies/thedarkknight/")
@@ -171,3 +181,10 @@ class TestReviewItem(object):
         resp = client.get("/api/movies/thedarkknight/reviews/1/")
         assert resp.status_code == 200
         assert json.loads(resp.data)["comment"] == "This movie is awesome!"
+
+    def test_delete(self, client):
+        resp = client.delete("/api/movies/thedarkknight/reviews/1/", headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
+        assert resp.status_code == 200
+
+        resp = client.get("/api/movies/thedarkknight/reviews/1/")
+        assert resp.status_code == 404

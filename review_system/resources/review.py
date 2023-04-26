@@ -69,7 +69,10 @@ class ReviewCollection(Resource):
 class ReviewItem(Resource):
     """Review item resource"""
     def get(self, movie, review):
-        body = ReviewSystemBuilder(movie.reviews[review].serialize())
+        try:
+            body = ReviewSystemBuilder(movie.reviews[review].serialize())
+        except IndexError:
+            return Response(status=404)
         body.add_namespace("revsys", LINK_RELATIONS_URL)
         body.add_control_delete_review(movie, review)
         body.add_control("self", url_for("reviewitem",  movie=movie, review=review))

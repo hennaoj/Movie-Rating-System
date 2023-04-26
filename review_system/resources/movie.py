@@ -108,12 +108,18 @@ class MovieItem(Resource):
     @check_api_key
     def put(self, movie):
         try:
-            if not request.json:
-                return Response(status=415)
-            else:
-                requestdict = json.loads(request.json)
+            requestdict = json.loads(request.data)
         except:
             return Response(status=415)
+        
+        try:
+            validate(requestdict, Movie.json_schema())
+        except ValidationError as error:
+            print(error)
+            raise BadRequest(description=str(error)) from error
+
+        requestdict = json.loads(request.data)
+
         movie_genres = []
         try:
             given_genres = requestdict["genres"]
