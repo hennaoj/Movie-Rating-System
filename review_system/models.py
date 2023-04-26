@@ -12,8 +12,8 @@ def init_db_command():
 
 # movies-genres many-to-many relationship table
 movie_genre = db.Table("movie_genre",
-    db.Column("movie_id", db.Integer, db.ForeignKey("movie.id"), primary_key=True),
-    db.Column("genre_id", db.Integer, db.ForeignKey("genre.id"), primary_key=True)
+    db.Column("movie_id", db.Integer, db.ForeignKey("movie.id", ondelete="CASCADE")),
+    db.Column("genre_id", db.Integer, db.ForeignKey("genre.id", ondelete="CASCADE"))
 )
 
 class Movie(db.Model):
@@ -26,7 +26,7 @@ class Movie(db.Model):
     uri_id = db.Column(db.String(64), nullable=False, unique=True)
 
     # movie-genre relationship
-    genres = db.relationship("Genre", secondary="movie_genre", back_populates="movies")
+    genres = db.relationship("Genre", secondary="movie_genre", back_populates="movies",cascade="all, delete")
 
     # one-to-many relationship with movie-reviews
     reviews = db.relationship("Review", back_populates="movie")
@@ -97,7 +97,7 @@ class Genre(db.Model):
     name = db.Column(db.String(32), unique=True, nullable=False)
 
     # many-to-many relationship with movies-genres
-    movies = db.relationship("Movie", secondary="movie_genre", back_populates="genres")
+    movies = db.relationship("Movie", secondary="movie_genre", back_populates="genres",cascade="all, delete")
 
     def serialize(self):
         '''Transform data into dictionary format for JSON'''
@@ -126,8 +126,8 @@ class Review(db.Model):
     rating = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.String(512))
     date = db.Column(db.DateTime, nullable=False)
-    movie_id = db.Column(db.Integer, db.ForeignKey("movie.id", ondelete="SET NULL"), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="SET NULL"), nullable=False)
+    movie_id = db.Column(db.Integer, db.ForeignKey("movie.id", ondelete="CASCADE"))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"))
 
     # one-to-many relationship with movie-reviews
     movie = db.relationship("Movie", back_populates="reviews")
