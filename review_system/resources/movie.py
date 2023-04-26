@@ -71,10 +71,9 @@ class MovieCollection(Resource):
         title_occurences = 0
         for db_movie in movies:
             if db_movie.uri_id == uri_id:
+                print(title_occurences)
                 title_occurences += 1
-
-        if title_occurences != 0:
-            uri_id = uri_id + "_{}".format(title_occurences)
+                uri_id = requestdict["title"].replace(" ", "").lower() + "_{}".format(title_occurences)
 
         movie = Movie(
             title=requestdict["title"],

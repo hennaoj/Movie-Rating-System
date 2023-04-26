@@ -126,8 +126,8 @@ class Review(db.Model):
     rating = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.String(512))
     date = db.Column(db.DateTime, nullable=False)
-    movie_id = db.Column(db.Integer, db.ForeignKey("movie.id"), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    movie_id = db.Column(db.Integer, db.ForeignKey("movie.id", ondelete="SET NULL"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="SET NULL"), nullable=False)
 
     # one-to-many relationship with movie-reviews
     movie = db.relationship("Movie", back_populates="reviews")
