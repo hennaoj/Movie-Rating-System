@@ -86,6 +86,6 @@ class ReviewItem(Resource):
     @check_api_key
     def delete(self, movie, review):
         review = movie.reviews[review]
-        Review.query.filter_by(id=review.id).delete()
+        db.session.delete(review)
         db.session.commit()
-        return Response(status=200)
+        return Response(status=204)

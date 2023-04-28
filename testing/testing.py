@@ -96,7 +96,7 @@ class TestMovieItem(object):
         assert json.loads(resp.data)["title"] == "The Dark Knight"
 
         resp = client.delete("/api/movies/thedarkknight/", headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
-        assert resp.status_code == 200
+        assert resp.status_code == 204
 
         resp = client.get("/api/movies/thedarkknight/")
         assert resp.status_code == 404
@@ -184,7 +184,7 @@ class TestReviewItem(object):
 
     def test_delete(self, client):
         resp = client.delete("/api/movies/thedarkknight/reviews/1/", headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
-        assert resp.status_code == 200
+        assert resp.status_code == 204
 
         resp = client.get("/api/movies/thedarkknight/reviews/1/")
         assert resp.status_code == 404

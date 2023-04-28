@@ -161,6 +161,7 @@ class MovieItem(Resource):
 
     @check_api_key
     def delete(self, movie):
-        Movie.query.filter_by(id=movie.id).delete()
+        db.session.delete(movie)
         db.session.commit()
-        return Response(status=200)
+
+        return Response(status=204)
