@@ -23,7 +23,7 @@ def list_movies():
         i+=1
     print()
 
-    choice = input("Do you want view more information on one of the movies? (y/n) ")
+    choice = input("Do you want to view more information on one of the movies? (y/n) ")
 
     if choice == "y":
         print_movie_selection_menu(sorted_movies)
@@ -51,7 +51,7 @@ def list_genres():
         i+=1
     print()
 
-    choice = input("Do you want view all movies in a given genre? (y/n) ")
+    choice = input("Do you want to view all movies in a given genre? (y/n) ")
 
     if choice == "y":
         print_genre_selection_menu(sorted_genres)
@@ -122,7 +122,7 @@ def view_movie_info(movie):
 
     if len(body["reviews"]) != 0:
         print()
-        choice = input("Do you want view the reviews of this movies? (y/n) ")
+        choice = input("Do you want to view the reviews of this movies? (y/n) ")
         if choice == "n":
             print_main_menu()
         elif choice == "y":
@@ -163,7 +163,7 @@ def view_movies_in_genre(genre):
         i+=1
     print()
 
-    choice = input("Do you want view more information on one of the movies? (y/n) ")
+    choice = input("Do you want to view more information on one of the movies? (y/n) ")
 
     if choice == "n":
         print_main_menu()
@@ -191,7 +191,7 @@ def search_for_movie():
             i+=1
 
     print()
-    choice = input("Do you want view more information on one of the movies? (y/n) ")
+    choice = input("Do you want to view more information on one of the movies? (y/n) ")
 
     if choice == "n":
         print_main_menu()
