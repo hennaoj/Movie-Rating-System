@@ -70,13 +70,13 @@ class TestMovieItem(object):
         assert resp.status_code == 200
         assert json.loads(resp.data)["title"] == "The Dark Knight"
 
-    def test_put(self, client):
+    def test_patch(self, client):
         resp = client.get("/api/movies/thedarkknight/")
         assert resp.status_code == 200
         assert json.loads(resp.data)["release year"] == "2008"
 
         edited_movie =  {"title":"The Dark Knight", "release_year":2009}
-        resp = client.put("/api/movies/thedarkknight/", json=edited_movie, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
+        resp = client.patch("/api/movies/thedarkknight/", json=edited_movie, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 204
         
         resp = client.get("/api/movies/thedarkknight/")

@@ -71,7 +71,6 @@ class MovieCollection(Resource):
         title_occurences = 0
         for db_movie in movies:
             if db_movie.uri_id == uri_id:
-                print(title_occurences)
                 title_occurences += 1
                 uri_id = requestdict["title"].replace(" ", "").lower() + "_{}".format(title_occurences)
 
@@ -106,17 +105,11 @@ class MovieItem(Resource):
             return Response(status=404)
 
     @check_api_key
-    def put(self, movie):
+    def patch(self, movie):
         try:
             requestdict = json.loads(request.data)
         except:
             return Response(status=415)
-        
-        try:
-            validate(requestdict, Movie.json_schema())
-        except ValidationError as error:
-            print(error)
-            raise BadRequest(description=str(error)) from error
 
         requestdict = json.loads(request.data)
 
@@ -139,13 +132,30 @@ class MovieItem(Resource):
             pass
         updatedict = {}
         try:
-            updatedict["title"] = requestdict["title"]
-            updatedict["release_year"] = requestdict["release_year"]
+            movie.title = requestdict["title"]
+        except:
+            pass
+        try:
+            movie.release_year = requestdict["release_year"]
+        except:
+            pass
+        try:
+            movies = Movie.query.all()
+            uri_id = requestdict["title"].replace(" ", "").lower()
+            movie.uri_id = uri_id
+
+            if movie.uri_id != uri_id:
+                title_occurences = 0
+                for db_movie in movies:
+                    if db_movie.uri_id == updatedict["uri_id"]:
+                        title_occurences += 1
+                        uri_id = requestdict["title"].replace(" ", "").lower() + "_{}".format(title_occurences)
+            movie.uri_id = uri_id
         except:
             pass
         if len(movie_genres) > 0:
             updatedict["genres"] = movie_genres
-        updatecount = Movie.query.filter_by(id=movie.id).update(updatedict)
+            movie.genres = updatedict["genres"]
         db.session.commit()
         return Response(status=204)
 
