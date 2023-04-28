@@ -22,6 +22,7 @@ class GenreCollection(Resource):
         body.add_namespace("revsys", LINK_RELATIONS_URL)
         body.add_control_add_genre()
         body.add_control("self", url_for("genrecollection"))
+        body.add_control("movies", url_for("moviecollection"))
 
         for genre in genres:
             item = ReviewSystemBuilder(genre.serialize())
