@@ -138,9 +138,9 @@ def print_reviews(body):
     body = resp.json()
     reviews = body["items"]
     for review in reviews:
-        print("Rating: ", review["rating"])
+        print("Rating:", review["rating"])
         if review["comment"]:
-            print("Comment: ", review["comment"])
+            print("Comment:", review["comment"])
         print()
 
 def view_movies_in_genre(genre):
