@@ -45,6 +45,8 @@ components:
         genres:
           description: A list of genres the movie belongs to
           type: array
+          items:
+            $ref: "#/components/schemas/Genre"
         release_year:
           description: The release year of the movie
           maximum: 2023
