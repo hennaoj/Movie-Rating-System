@@ -6,13 +6,15 @@ on the command line. Includes functionalities for viewing movies and genres.
 import sys
 import requests
 
-def list_movies(body):
+def list_movies():
     '''
     Prints the full list of database movies in alphabetical order.
     Offers an option to view more information on a selected movie.
     '''
     print()
 
+    resp = s.get(API_URL + "/api/movies/")
+    body = resp.json()
     sorted_movies = sorted(body["items"], key=lambda d: d['title'])
 
     i = 0
@@ -26,14 +28,17 @@ def list_movies(body):
     if choice == "y":
         print_movie_selection_menu(sorted_movies)
 
-    print_main_menu(body)
+    print_main_menu()
 
-def list_genres(body):
+def list_genres():
     '''
     Lists all the genres in the database in alphabetical order.
     Offers an option to view all movies in a selected genre.
     '''
     print()
+
+    resp = s.get(API_URL + "/api/movies/")
+    body = resp.json()
 
     genreresp = s.get(API_URL + body["@controls"]["genres"]["href"])
     genrebody = genreresp.json()
@@ -51,7 +56,7 @@ def list_genres(body):
     if choice == "y":
         print_genre_selection_menu(sorted_genres)
 
-    print_main_menu(body)
+    print_main_menu()
 
 def print_movie_selection_menu(movies):
     '''
@@ -110,10 +115,33 @@ def view_movie_info(movie):
         pass
 
     try:
-        if body["rating"]:
-            print("Description: ", body["rating"])
+        if body["average rating"]:
+            print("Average rating: ", body["average rating"])
     except KeyError:
         pass
+
+    if len(body["reviews"]) != 0:
+        print()
+        choice = input("Do you want view the reviews of this movies? (y/n) ")
+        if choice == "n":
+            print_main_menu()
+        elif choice == "y":
+            print_reviews(body)
+
+def print_reviews(body):
+    '''
+    Prints the reviews of a movie.
+    '''
+
+    print()
+    resp = s.get(API_URL + body["@controls"]["reviews"]["href"])
+    body = resp.json()
+    reviews = body["items"]
+    for review in reviews:
+        print("Rating: ", review["rating"])
+        if review["comment"]:
+            print("Comment: ", review["comment"])
+        print()
 
 def view_movies_in_genre(genre):
     '''
@@ -138,15 +166,17 @@ def view_movies_in_genre(genre):
     choice = input("Do you want view more information on one of the movies? (y/n) ")
 
     if choice == "n":
-        print_main_menu(body)
+        print_main_menu()
     elif choice == "y":
         print_movie_selection_menu(sorted_movies)
 
-def search_for_movie(body):
+def search_for_movie():
     '''
     Searches for a movie title based on the keyword given by the user.
     '''
     print()
+    resp = s.get(API_URL + "/api/movies/")
+    body = resp.json()
     keyword = input("Enter keyword to be searched from movie titles: ")
     sorted_movies = sorted(body["items"], key=lambda d: d['title'])
 
@@ -164,11 +194,11 @@ def search_for_movie(body):
     choice = input("Do you want view more information on one of the movies? (y/n) ")
 
     if choice == "n":
-        print_main_menu(body)
+        print_main_menu()
     elif choice == "y":
         print_movie_selection_menu(filtered_movies)
 
-def print_main_menu(body):
+def print_main_menu():
     '''
     Prints the main menu with different functionality options.
     '''
@@ -182,11 +212,11 @@ def print_main_menu(body):
     choice = input("What do you want to do? ")
 
     if choice == "1":
-        list_movies(body)
+        list_movies()
     if choice == "2":
-        list_genres(body)
+        list_genres()
     if choice == "3":
-        search_for_movie(body)
+        search_for_movie()
     elif choice == "0":
         print()
         print("See you later!")
@@ -196,12 +226,11 @@ if __name__ == "__main__":
     API_URL = "http://localhost:5000"
     with requests.Session() as s:
         s.headers.update({"Accept": "application/vnd.mason+json"})
-        init_resp = s.get(API_URL + "/api/movies/")
-        if init_resp.status_code != 200:
+        resp = s.get(API_URL + "/api/movies/")
+        if resp.status_code != 200:
             print("Unable to access API.")
         else:
             print()
             print("Welcome to the Movie Rating System! \n")
             print("Here you can view movie information and reviews left by others.")
-            init_body = init_resp.json()
-            print_main_menu(init_body)
+            print_main_menu()
