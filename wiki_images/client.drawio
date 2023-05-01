@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-05-01T15:16:10.835Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36" etag="M9timHwVrc_QhSxuaLr_" version="21.2.3" type="device">
+<mxfile host="app.diagrams.net" modified="2023-05-01T15:30:03.572Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36" etag="MwWR91KcZ-PUrxLAZMUr" version="21.2.3" type="device">
   <diagram name="Page-1" id="qkCj3c1NpeE8XbWj1kWN">
-    <mxGraphModel dx="2074" dy="1124" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="792" dy="1114" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -10,22 +10,22 @@
         <mxCell id="5pyBXnJsSIEW2lkmxWnL-2" value="Exit" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="510" y="300" width="140" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="5pyBXnJsSIEW2lkmxWnL-3" value="All movies" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="5pyBXnJsSIEW2lkmxWnL-3" value="All movies&lt;br&gt;/api/movies/" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="120" y="420" width="140" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="5pyBXnJsSIEW2lkmxWnL-4" value="All genres" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="5pyBXnJsSIEW2lkmxWnL-4" value="All genres&lt;br&gt;/api/genres/" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="270" y="420" width="140" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="5pyBXnJsSIEW2lkmxWnL-5" value="Search movie" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="5pyBXnJsSIEW2lkmxWnL-5" value="Search a movie" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="425" y="420" width="140" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="5pyBXnJsSIEW2lkmxWnL-6" value="List of movies" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="5pyBXnJsSIEW2lkmxWnL-6" value="A subgroup of movies" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="340" y="525" width="140" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="5pyBXnJsSIEW2lkmxWnL-7" value="Movie" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="5pyBXnJsSIEW2lkmxWnL-7" value="Movie&lt;br&gt;/api/movies/{id}/" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="270" y="630" width="140" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="5pyBXnJsSIEW2lkmxWnL-8" value="Reviews" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="5pyBXnJsSIEW2lkmxWnL-8" value="Reviews&lt;br&gt;/api/movies/{id}/reviews/" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="270" y="730" width="140" height="50" as="geometry" />
         </mxCell>
         <mxCell id="5pyBXnJsSIEW2lkmxWnL-9" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.25;exitY=1;exitDx=0;exitDy=0;" parent="1" source="5pyBXnJsSIEW2lkmxWnL-1" target="5pyBXnJsSIEW2lkmxWnL-3" edge="1">
