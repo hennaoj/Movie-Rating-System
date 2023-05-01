@@ -232,7 +232,7 @@ if __name__ == "__main__":
             print("Unable to access API.")
         else:
             print()
-            print("--------------------------")
             print("Movie Rating System Client")
             print("--------------------------")
+            print("View movie information and reviews!")
             print_main_menu()
