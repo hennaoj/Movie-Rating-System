@@ -2,6 +2,7 @@
 from review_system.resources.movie import MovieCollection, MovieItem
 from review_system.resources.review import ReviewCollection, ReviewItem
 from review_system.resources.genre import GenreCollection, GenreItem
+from review_system.resources.user import UserCollection
 from review_system.utils import MovieConverter, GenreConverter
 
 def add_url_map_converters(app):
@@ -17,3 +18,4 @@ def add_api_resources(api):
     api.add_resource(ReviewItem, "/api/movies/<movie:movie>/reviews/<int:review>/")
     api.add_resource(GenreCollection, "/api/movies/genres/")
     api.add_resource(GenreItem, "/api/movies/genres/<genre:genre>/")
+    api.add_resource(UserCollection, "/api/users/")

@@ -80,7 +80,7 @@ components:
       - rating
       type: object
   securitySchemes:
-    ApiKey:
+    Apikey:
       type: apiKey
       name: API-Key
       in: header

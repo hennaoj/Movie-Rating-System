@@ -1,14 +1,14 @@
 '''Functionality for api key creation'''
 import click
 from flask.cli import with_appcontext
-from review_system.models import ApiKey
+from review_system.models import Apikey
 from review_system import db
 
 def create_sample_key():
     '''create a sample api key for testing'''
     token = "ea4bfdbe683994744fd665f90ac1f393"
 
-    db_key = ApiKey(
+    db_key = Apikey(
         key = token,
     )
 

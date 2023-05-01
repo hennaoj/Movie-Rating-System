@@ -81,6 +81,7 @@ def populate_test_db():
     add_review_to_movie_and_user(r_3, m_2, u_2)
 
     m_1.update_rating()
+    m_2.update_rating()
 
     # add all objects to the database session
     db.session.add(m_1)

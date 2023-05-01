@@ -7,7 +7,7 @@ from flask_restful import Resource
 from werkzeug.exceptions import BadRequest
 
 from review_system import db
-from review_system.models import Review
+from review_system.models import Review, User, Apikey
 from review_system.auth import check_api_key
 from review_system.constants import *
 from review_system.utils import ReviewSystemBuilder
@@ -48,12 +48,21 @@ class ReviewCollection(Resource):
         except KeyError:
             pass
 
+        user_id = 1
+        try:
+            apikey = request.json["apikey"]
+            user_id = Apikey.query.filter_by(key=apikey).first().user_id
+        except KeyError as e:
+            print(e)
+            pass
+
+
         review = Review(
             rating=request.json["rating"],
             comment=comment,
             date=datetime.now(),
             movie_id=movie.id,
-            user_id = 1 # this needs to be fixed, just a placeholder for now
+            user_id = user_id
         )
 
         #average update needs to be added

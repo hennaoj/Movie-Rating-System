@@ -5,37 +5,52 @@ on the command line. Includes functionalities for viewing movies and genres.
 
 import sys
 import requests
+import os
+
+API_KEY = "ea4bfdbe683994744fd665f90ac1f393"
+
+def ask_for_inputs(inputdict, prompt, toggleseparator=True):
+    if toggleseparator:
+        print("\n################################\n")
+    for key in inputdict.keys():
+        print(key + " = " + inputdict[key][0])
+    choice = input(prompt + " ")
+    if choice in inputdict.keys():
+        if len(inputdict[choice][2]) > 0:
+            inputdict[choice][1](*inputdict[choice][2])
+        else:
+            inputdict[choice][1]()
+    else:
+        print("Invalid input.")
+        ask_for_inputs(inputdict, prompt)
 
 def list_movies():
     '''
     Prints the full list of database movies in alphabetical order.
     Offers an option to view more information on a selected movie.
     '''
-    print()
-
+    print("\n################################")
+    print("###### List of All Movies ######")
+    print("################################\n")
     resp = s.get(API_URL + "/api/movies/")
     body = resp.json()
     sorted_movies = sorted(body["items"], key=lambda d: d['title'])
-
+    inputdict = {}
     i = 0
     for movie in sorted_movies:
-        print(i, movie["title"])
+        inputdict[str(i)] = [movie["title"], view_movie_info, [movie]]
         i+=1
-    print()
-
-    choice = input("Do you want to view more information on one of the movies? (y/n) ")
-
-    if choice == "y":
-        print_movie_selection_menu(sorted_movies)
-
-    print_main_menu()
+    inputdict["n"] = ["Return to main menu", print_main_menu, []]
+    ask_for_inputs(inputdict, "\nLook at specific movie or return? ", False)
 
 def list_genres():
     '''
     Lists all the genres in the database in alphabetical order.
     Offers an option to view all movies in a selected genre.
     '''
-    print()
+    print("\n################################")
+    print("########### Genres ############")
+    print("################################\n")
 
     resp = s.get(API_URL + "/api/movies/")
     body = resp.json()
@@ -45,18 +60,13 @@ def list_genres():
 
     sorted_genres = sorted(genrebody["items"], key=lambda d: d['name'])
 
+    inputdict = {}
     i = 0
     for genre in sorted_genres:
-        print(i, genre["name"])
+        inputdict[str(i)] = [genre["name"], view_movies_in_genre, [genre]]
         i+=1
-    print()
-
-    choice = input("Do you want to view all movies in a given genre? (y/n) ")
-
-    if choice == "y":
-        print_genre_selection_menu(sorted_genres)
-
-    print_main_menu()
+    inputdict["n"] = ["Return to main menu", print_main_menu, []]
+    ask_for_inputs(inputdict, "\nLook at movies in specific genre or return? ", False)
 
 def print_movie_selection_menu(movies):
     '''
@@ -95,7 +105,9 @@ def view_movie_info(movie):
     '''
     Prints all the basic information of a movie.
     '''
-    print()
+    print("\n################################")
+    print("###### Movie Information #######")
+    print("################################\n")
     resp = s.get(API_URL + movie["@controls"]["self"]["href"])
     body = resp.json()
 
@@ -120,29 +132,53 @@ def view_movie_info(movie):
     except KeyError:
         pass
 
-    if len(body["reviews"]) != 0:
-        print()
-        choice = input("Do you want to view the reviews of this movie? (y/n) ")
-        if choice == "n":
-            print_main_menu()
-        elif choice == "y":
-            print_reviews(body)
+    inputdict = {
+    "0": ["View Reviews", print_reviews, [body]], 
+    "1": ["Return to Movies list", list_movies, []], 
+    "2": ["Return to Main Menu", print_main_menu, []], 
+    }
+    ask_for_inputs(inputdict, "\nMake your choice (0, 1, 2)?")
 
 def print_reviews(body):
     '''
     Prints the reviews of a movie.
     '''
 
-    print()
+    print("\n################################")
+    print("########### Reviews ############")
+    print("################################\n")
     resp = s.get(API_URL + body["@controls"]["reviews"]["href"])
-    body = resp.json()
-    reviews = body["items"]
-    for review in reviews:
-        print(review["rating"] + ".0 / 5.0")
-        if review["comment"]:
-            print(review["comment"])
-        print(f'by {review["user"]}')
-        print()
+    body_ = resp.json()
+    reviews = body_["items"]
+    if len(reviews) > 0: 
+        for review in reviews:
+            print(review["rating"] + ".0 / 5.0")
+            if review["comment"]:
+                print(review["comment"])
+            print(f'by {review["user"]}\n')
+    else:
+        print("No reviews yet.\n")
+    inputdict = {
+    "0": ["Add a Review", add_a_review, [API_URL + body["@controls"]["reviews"]["href"], body]], 
+    "1": ["Return to Movies list", list_movies, []], 
+    "2": ["Return to Main Menu", print_main_menu, []], 
+    }
+    ask_for_inputs(inputdict, "\nMake your choice (0, 1, 2)?")
+
+def add_a_review(url, body):
+    rating = None
+    while rating not in [1, 2, 3, 4, 5]:
+        try:
+            rating = int(input("Rating for movie? (1, 2, 3, 4, 5) "))
+            if rating not in [1, 2, 3, 4, 5]:
+                raise ValueError
+        except:
+            print("Invalid input. Give integer between 1-5")
+    comment = str(input("Write a comment.\n\n"))
+    review =  {"rating":int(rating), "comment":comment, "apikey":API_KEY}
+    resp = s.post(url, json=review, headers={"API-Key":API_KEY})
+    print_reviews(body)
+    print(resp)
 
 def view_movies_in_genre(genre):
     '''
@@ -157,19 +193,14 @@ def view_movies_in_genre(genre):
     print()
 
     sorted_movies = sorted(body["movies"], key=lambda d: d['title'])
-
+    inputdict = {}
     i = 0
     for movie in sorted_movies:
-        print(i, movie["title"])
+        inputdict[str(i)] = [movie["title"], view_movie_info, [movie]]
         i+=1
-    print()
+    inputdict["n"] = ["Return to main menu", print_main_menu, []]
+    ask_for_inputs(inputdict, "\nLook at specific movie or return: ", False)
 
-    choice = input("Do you want to view more information on one of the movies? (y/n) ")
-
-    if choice == "n":
-        print_main_menu()
-    elif choice == "y":
-        print_movie_selection_menu(sorted_movies)
 
 def search_for_movie():
     '''
@@ -182,57 +213,76 @@ def search_for_movie():
     sorted_movies = sorted(body["items"], key=lambda d: d['title'])
 
     print()
-
-    filtered_movies = []
+    inputdict = {}
     i = 0
     for movie in sorted_movies:
         if keyword.lower() in movie["title"].lower():
-            print(i, movie["title"])
-            filtered_movies.append(movie)
+            inputdict[str(i)] = [movie["title"], view_movie_info, [movie]]
             i+=1
+    inputdict["n"] = ["Return to main menu", print_main_menu, []]
+    ask_for_inputs(inputdict, "\nLook at specific movie or return: ", False)
 
-    print()
-    choice = input("Do you want to view more information on one of the movies? (y/n) ")
+def check_api_file():
+    p = os.path.dirname(os.path.abspath(__file__))
+    apifiles = os.listdir(p + "/apikeys/")
+    global API_KEY
+    if len(apifiles) == 0:
+        return None
+    else:
+        txtfiles = filter(lambda x: x[-4:] == '.txt', apifiles)
+        for i in txtfiles:
+            try:
+                with open(p+"/apikeys/"+i, "r") as f:
+                    line = f.readline()
+                    name = i.split(".")[0]
+                    choice = input("Log in as " + name + "? (y/n)")
+                    if choice == "y":
+                        API_KEY = line
+                        print(API_KEY)
+                        break
+                    elif chnoice == "n":
+                        pass
+                    else:
+                        print("Invalid input.")
+            except:
+                pass
 
-    if choice == "n":
-        print_main_menu()
-    elif choice == "y":
-        print_movie_selection_menu(filtered_movies)
+def create_user():
+    username = str(input("Give username.\n"))
+    age = int(input("Give age.\n"))
+    gender = int(input("Give gender (1:male, 2:female, 3:other)"))
+
+    user =  {"username":username, "age":age, "gender":gender}
+    resp = s.post(API_URL+"/api/users/", json=user)
+    if resp.status_code == 201:
+        p = os.path.dirname(os.path.abspath(__file__))
+        with open(p+"/apikeys/"+ username + ".txt", "w") as f:
+            f.write(resp.headers["API-key"])
 
 def print_main_menu():
     '''
     Prints the main menu with different functionality options.
     '''
-    print("\nPlease make your choice!\n")
-    print("1 = list of the movies in the database")
-    print("2 = list of the genres in the database")
-    print("3 = search for a movie by title")
-    print("0 = exit")
-    print()
-
-    choice = input("What do you want to do? ")
-
-    if choice == "1":
-        list_movies()
-    if choice == "2":
-        list_genres()
-    if choice == "3":
-        search_for_movie()
-    elif choice == "0":
-        print()
-        print("See you later!")
-        sys.exit(0)
+    print("\n\nMovie Rating System Client")
+    print("--------------------------")
+    print("View movie information and reviews!\n")
+    check_api_file()
+    inputdict = {
+    "1": ["List of movies in the database", list_movies, []], 
+    "2": ["List of the genres in the database", list_genres, []], 
+    "3": ["Search for a movie by title", search_for_movie, []], 
+    "4": ["Create user", create_user, []], 
+    "0": ["Exit", sys.exit, []]
+    }
+    ask_for_inputs(inputdict, "\nWhat do you want to do?")
 
 if __name__ == "__main__":
     API_URL = "http://localhost:5000"
+    CURRENT_URL = "movies/"
     with requests.Session() as s:
         s.headers.update({"Accept": "application/vnd.mason+json"})
         resp = s.get(API_URL + "/api/movies/")
         if resp.status_code != 200:
             print("Unable to access API.")
         else:
-            print()
-            print("Movie Rating System Client")
-            print("--------------------------")
-            print("View movie information and reviews!")
             print_main_menu()

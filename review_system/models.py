@@ -179,6 +179,10 @@ class Review(db.Model):
             "description": "Written review of the movie",
             "type": "string"
         }
+        props["apikey"] = {
+            "description": "Apikey of the reviewer",
+            "type": "string"
+        }
         return schema
 
 class User(db.Model):
@@ -187,7 +191,9 @@ class User(db.Model):
     username = db.Column(db.String(32), unique=True, nullable=False)
     age = db.Column(db.Integer, nullable=False)
     gender = db.Column(db.Integer, nullable=False) # 1 = male, 2 = female, 3 = other
-    account_creation_date = db.Column(db.DateTime, nullable=False)
+    account_creation_date = db.Column(db.DateTime, nullable=True)
+
+    apikey = db.relationship("Apikey", back_populates="user", uselist=False)
 
     # one-to-many relationship with user-reviews
     reviews = db.relationship("Review", back_populates="user")
@@ -206,7 +212,7 @@ class User(db.Model):
         '''JSON schema for validation'''
         schema = {
             "type": "object",
-            "required": ["username", "age", "gender", "account_creation_date"]
+            "required": ["username", "age", "gender"]
         }
         props = schema["properties"] = {}
         props["username"] = {
@@ -232,10 +238,13 @@ class User(db.Model):
         }
         return schema
 
-class ApiKey(db.Model):
+class Apikey(db.Model):
     '''Class representing api key used for authentication'''
     id = db.Column(db.Integer, primary_key=True)
     key = db.Column(db.String(32), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"))
+    
+    user = db.relationship("User", back_populates="apikey", uselist=False)
 
     def serialize(self):
         '''Transform data into dictionary format for JSON'''
@@ -249,7 +258,7 @@ class ApiKey(db.Model):
         '''JSON schema for validation'''
         schema = {
             "type": "object",
-            "required": ["key", "user_id"]
+            "required": ["key"]
         }
         props = schema["properties"] = {}
         props["key"] = {
