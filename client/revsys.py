@@ -138,9 +138,10 @@ def print_reviews(body):
     body = resp.json()
     reviews = body["items"]
     for review in reviews:
-        print("Rating:", review["rating"])
+        print(review["rating"] + ".0 / 5.0")
         if review["comment"]:
-            print("Comment:", review["comment"])
+            print(review["comment"])
+        print(f'by {review["user"]}')
         print()
 
 def view_movies_in_genre(genre):
@@ -231,6 +232,7 @@ if __name__ == "__main__":
             print("Unable to access API.")
         else:
             print()
-            print("Welcome to the Movie Rating System! \n")
-            print("Here you can view movie information and reviews left by others.")
+            print("--------------------------")
+            print("Movie Rating System Client")
+            print("--------------------------")
             print_main_menu()
