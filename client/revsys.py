@@ -122,7 +122,7 @@ def view_movie_info(movie):
 
     if len(body["reviews"]) != 0:
         print()
-        choice = input("Do you want to view the reviews of this movies? (y/n) ")
+        choice = input("Do you want to view the reviews of this movie? (y/n) ")
         if choice == "n":
             print_main_menu()
         elif choice == "y":
