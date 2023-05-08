@@ -72,6 +72,7 @@ def list_genres():
     Lists all the genres in the database in alphabetical order.
     Offers an option to view all movies in a selected genre.
     '''
+
     decorate_title("List of All Genres")
     resp = s.get(API_URL + "/api/movies/")
     body = resp.json()
@@ -264,7 +265,6 @@ def check_api_file():
             except:
                 pass
 
-
 def validate_input(prompt, inputtype, validlist=False):
     for i in range(100):
         try:
@@ -278,7 +278,6 @@ def validate_input(prompt, inputtype, validlist=False):
                 return(value)
         except:
             print("Input needs to be of type ", inputtype)
-
 
 def create_user():
     decorate_title("Create user")
