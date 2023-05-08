@@ -7,12 +7,14 @@ import sys
 import requests
 import os
 
-API_KEY = "ea4bfdbe683994744fd665f90ac1f393"
+DEFAULT_API_KEY = "ea4bfdbe683994744fd665f90ac1f393"
+API_KEY = DEFAULT_API_KEY
+ASK_LOGIN = True
 
 def ask_for_inputs(inputdict, prompt, toggleseparator=True):
     if toggleseparator:
         print("\n################################\n")
-    for key in inputdict.keys():
+    for key in sorted(inputdict.keys()):
         print(key + " = " + inputdict[key][0])
     choice = input(prompt + " ")
     if choice in inputdict.keys():
@@ -49,7 +51,7 @@ def list_genres():
     Offers an option to view all movies in a selected genre.
     '''
     print("\n################################")
-    print("########### Genres ############")
+    print("############ Genres ############")
     print("################################\n")
 
     resp = s.get(API_URL + "/api/movies/")
@@ -160,8 +162,8 @@ def print_reviews(body):
         print("No reviews yet.\n")
     inputdict = {
     "0": ["Add a Review", add_a_review, [API_URL + body["@controls"]["reviews"]["href"], body]], 
-    "1": ["Return to Movies list", list_movies, []], 
-    "2": ["Return to Main Menu", print_main_menu, []], 
+    "m": ["Return to Movies list", list_movies, []], 
+    "n": ["Return to Main Menu", print_main_menu, []], 
     }
     ask_for_inputs(inputdict, "\nMake your choice (0, 1, 2)?")
 
@@ -198,6 +200,7 @@ def view_movies_in_genre(genre):
     for movie in sorted_movies:
         inputdict[str(i)] = [movie["title"], view_movie_info, [movie]]
         i+=1
+    inputdict["m"] = ["Return to genres", list_genres, []]
     inputdict["n"] = ["Return to main menu", print_main_menu, []]
     ask_for_inputs(inputdict, "\nLook at specific movie or return: ", False)
 
@@ -222,35 +225,55 @@ def search_for_movie():
     inputdict["n"] = ["Return to main menu", print_main_menu, []]
     ask_for_inputs(inputdict, "\nLook at specific movie or return: ", False)
 
-def check_api_file():
-    p = os.path.dirname(os.path.abspath(__file__))
-    apifiles = os.listdir(p + "/apikeys/")
-    global API_KEY
-    if len(apifiles) == 0:
-        return None
+def check_api_file(asklogin=True):
+    if asklogin:
+        p = os.path.dirname(os.path.abspath(__file__))
+        apifiles = os.listdir(p + "/apikeys/")
+        global API_KEY
+        global ASK_LOGIN
+        if len(apifiles) == 0:
+            return None
+        else:
+            txtfiles = filter(lambda x: x[-4:] == '.txt', apifiles)
+            for i in txtfiles:
+                try:
+                    with open(p+"/apikeys/"+i, "r") as f:
+                        line = f.readline()
+                        name = i.split(".")[0]
+                        choice = input("Log in as " + name + "? (y/n)")
+                        if choice == "y":
+                            API_KEY = line
+                            ASK_LOGIN = False
+                            break
+                        elif chnoice == "n":
+                            pass
+                        else:
+                            print("Invalid input.")
+                except:
+                    pass
     else:
-        txtfiles = filter(lambda x: x[-4:] == '.txt', apifiles)
-        for i in txtfiles:
-            try:
-                with open(p+"/apikeys/"+i, "r") as f:
-                    line = f.readline()
-                    name = i.split(".")[0]
-                    choice = input("Log in as " + name + "? (y/n)")
-                    if choice == "y":
-                        API_KEY = line
-                        print(API_KEY)
-                        break
-                    elif chnoice == "n":
-                        pass
-                    else:
-                        print("Invalid input.")
-            except:
-                pass
+        pass
+
+
+def validate_input(prompt, inputtype, validlist=False):
+    for i in range(100):
+        try:
+            value = inputtype(input(prompt))
+            if validlist:
+                if value in validlist:
+                    return(value)
+                else:
+                    print("Input needs to be one of given choices ", inputtype)
+            else:
+                return(value)
+        except:
+            print("Input needs to be of type ", inputtype)
+
 
 def create_user():
-    username = str(input("Give username.\n"))
-    age = int(input("Give age.\n"))
-    gender = int(input("Give gender (1:male, 2:female, 3:other)"))
+    username = validate_input("Give username.\n", str)
+    age = validate_input("Give age.\n", int)
+    gender = validate_input("Give gender (1:male, 2:female, 3:other)\n", int, [1, 2, 3])
 
     user =  {"username":username, "age":age, "gender":gender}
     resp = s.post(API_URL+"/api/users/", json=user)
@@ -258,6 +281,7 @@ def create_user():
         p = os.path.dirname(os.path.abspath(__file__))
         with open(p+"/apikeys/"+ username + ".txt", "w") as f:
             f.write(resp.headers["API-key"])
+    print_main_menu()
 
 def print_main_menu():
     '''
@@ -266,14 +290,16 @@ def print_main_menu():
     print("\n\nMovie Rating System Client")
     print("--------------------------")
     print("View movie information and reviews!\n")
-    check_api_file()
+    if ASK_LOGIN:
+        check_api_file()
     inputdict = {
     "1": ["List of movies in the database", list_movies, []], 
     "2": ["List of the genres in the database", list_genres, []], 
     "3": ["Search for a movie by title", search_for_movie, []], 
-    "4": ["Create user", create_user, []], 
-    "0": ["Exit", sys.exit, []]
+    "n": ["Exit", sys.exit, []]
     }
+    if API_KEY == DEFAULT_API_KEY:
+        inputdict["4"] = ["Create user", create_user, []]
     ask_for_inputs(inputdict, "\nWhat do you want to do?")
 
 if __name__ == "__main__":
