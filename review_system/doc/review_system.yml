@@ -79,6 +79,30 @@ components:
       required:
       - rating
       type: object
+    User:
+      properties:
+        username:
+          description: Name of the user
+          type: string
+        age:
+          description: Age of the user
+          maximum: 130
+          minimum: 0
+          type: integer
+        gender:
+          description: Gender of the user as int. 1 = male, 2 = female, 3 = other.
+          maximum: 3
+          minimum: 1
+          type: integer
+        account_creation_date:
+          description: The date/time when the user was added to the database.
+          pattern: (\\d{4})-(\\d{2})-(\\d{2})[T](\\d{2}):(\\d{2}):(\\d{2})[+](\\d{2}):(\\d{2})
+          type: string
+      required:
+      - username
+      - age
+      - gender
+      type: object
   securitySchemes:
     Apikey:
       type: apiKey
@@ -94,7 +118,7 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 paths:
-  /genres/:
+  /movies/genres/:
     get:
       description: Get the list of all genres
       responses:
@@ -127,7 +151,7 @@ paths:
           description: Failed to validate request body
         '415':
           description: Wrong media type was used
-  /genres/{genre}/:
+  /movies/genres/{genre}/:
     parameters:
     - $ref: '#/components/parameters/genre'
     get:
@@ -291,7 +315,7 @@ paths:
           description: The movie was not found
         '415':
           description: Wrong media type was used
-  /movies/{movie}/reviews/{review}:
+  /movies/{movie}/reviews/{review}/:
     parameters:
     - $ref: '#/components/parameters/movie'
     - $ref: '#/components/parameters/review'
@@ -317,3 +341,25 @@ paths:
          description: The review was successfully deleted
        '404':
          description: The review was not found
+  /users/:
+    post:
+      description: Create a new user
+      requestBody:
+        description: JSON document that contains the review
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            example:
+              username: MovieFan123
+              age: 88
+              gender: 1
+      responses:
+        '201':
+          description: The user was created
+        '400':
+          description: Invalid request body
+        '404':
+          description: Failed to create apikey for user
+        '415':
+          description: Wrong media type was used
