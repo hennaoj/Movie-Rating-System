@@ -198,15 +198,6 @@ class User(db.Model):
     # one-to-many relationship with user-reviews
     reviews = db.relationship("Review", back_populates="user")
 
-    def serialize(self):
-        '''Transform data into dictionary format for JSON'''
-        userdict = {
-            "username": str(self.username),
-            "gender": str(self.gender),
-            "account_creation_date": str(self.account_creation_date),
-        }
-        return userdict
-
     @staticmethod
     def json_schema():
         '''JSON schema for validation'''
@@ -243,7 +234,6 @@ class Apikey(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     key = db.Column(db.String(32), unique=True, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"))
-    
     user = db.relationship("User", back_populates="apikey", uselist=False)
 
     def serialize(self):

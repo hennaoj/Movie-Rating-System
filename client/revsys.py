@@ -3,24 +3,27 @@ The movie rating system client script that provides a program runnable
 on the command line. Includes functionalities for viewing movies and genres.
 '''
 
+import os
 import sys
 import requests
-import os
 
 DEFAULT_API_KEY = "ea4bfdbe683994744fd665f90ac1f393"
 API_KEY = DEFAULT_API_KEY
 ASK_LOGIN = True
 
 def decorate_title(text, subtext=None):
+    '''
+    Decorate text for the command line interface
+    '''
     print("\n########################################")
     lengthoftitle = len(text)
     numberofsigns = int((40 - lengthoftitle - 2) / 2)
     string = ""
-    for i in range(numberofsigns):
+    for _ in range(numberofsigns):
         string += "#"
     string += " " + text + " "
-    for i in range(numberofsigns):
-        string += "#"    
+    for _ in range(numberofsigns):
+        string += "#"
     print(string)
     if not subtext:
         print("########################################\n")
@@ -28,14 +31,17 @@ def decorate_title(text, subtext=None):
         lengthofsubtext = len(subtext)
         numberofsigns = int((40 - lengthofsubtext - 2) / 2)
         string = ""
-        for i in range(numberofsigns):
+        for _ in range(numberofsigns):
             string += "#"
         string += " " + subtext + " "
-        for i in range(numberofsigns):
-            string += "#"    
+        for _ in range(numberofsigns):
+            string += "#"
         print(string)
         print("########################################\n")
 def ask_for_inputs(inputdict, prompt, toggleseparator=True):
+    '''
+    print input options
+    '''
     if toggleseparator:
         print("\n########################################\n")
     for key in sorted(inputdict.keys()):
@@ -167,7 +173,7 @@ def print_reviews(body):
     resp = s.get(API_URL + body["@controls"]["reviews"]["href"])
     body_ = resp.json()
     reviews = body_["items"]
-    if len(reviews) > 0: 
+    if len(reviews) > 0:
         for review in reviews:
             print(review["rating"] + ".0 / 5.0")
             if review["comment"]:
@@ -183,13 +189,16 @@ def print_reviews(body):
     ask_for_inputs(inputdict, "\nMake your choice (0, 1, 2)?")
 
 def add_a_review(url, body):
+    '''
+    Add a review to a movie.
+    '''
     rating = None
     while rating not in [1, 2, 3, 4, 5]:
         try:
             rating = int(input("Rating for movie? (1, 2, 3, 4, 5) "))
             if rating not in [1, 2, 3, 4, 5]:
                 raise ValueError
-        except:
+        except ValueError:
             print("Invalid input. Give integer between 1-5")
     comment = str(input("Write a comment.\n\n"))
     review =  {"rating":int(rating), "comment":comment, "apikey":API_KEY}
@@ -240,46 +249,56 @@ def search_for_movie():
     ask_for_inputs(inputdict, "\nLook at specific movie or return: ", False)
 
 def check_api_file():
+    '''
+    Check api file folder for {username}.txt files.
+    '''
     p = os.path.dirname(os.path.abspath(__file__))
     apifiles = os.listdir(p + "/apikeys/")
     global API_KEY
     global ASK_LOGIN
     if len(apifiles) == 0:
-        return None
-    else:
-        txtfiles = filter(lambda x: x[-4:] == '.txt', apifiles)
-        for i in txtfiles:
-            try:
-                with open(p+"/apikeys/"+i, "r") as f:
-                    line = f.readline()
-                    name = i.split(".")[0]
-                    choice = input("Log in as " + name + "? (y/n)")
-                    if choice == "y":
-                        API_KEY = line
-                        ASK_LOGIN = False
-                        break
-                    elif chnoice == "n":
-                        pass
-                    else:
-                        print("Invalid input.")
-            except:
-                pass
+        return()
+    txtfiles = filter(lambda x: x[-4:] == '.txt', apifiles)
+    for i in txtfiles:
+        try:
+            with open(p+"/apikeys/"+i, "r", encoding='UTF-8') as f:
+                line = f.readline()
+                name = i.split(".")[0]
+                choice = input("Log in as " + name + "? (y/n)")
+                if choice == "y":
+                    API_KEY = line
+                    ASK_LOGIN = False
+                    break
+                if choice == "n":
+                    pass
+                else:
+                    print("Invalid input.")
+        except:
+            pass
+    return()
 
 def validate_input(prompt, inputtype, validlist=False):
-    for i in range(100):
+    '''
+    Validate given input
+    '''
+    for _ in range(100):
         try:
             value = inputtype(input(prompt))
-            if validlist:
-                if value in validlist:
-                    return(value)
-                else:
-                    print("Input needs to be one of given choices ", inputtype)
-            else:
-                return(value)
         except:
             print("Input needs to be of type ", inputtype)
+            continue
+        if validlist:
+            if value in validlist:
+                return(value)
+            print("Input needs to be one of given choices ", inputtype)
+            continue
+        return(value)
+
 
 def create_user():
+    '''
+    Create a new user for api usage
+    '''
     decorate_title("Create user")
     username = validate_input("Give username.\n", str)
     age = validate_input("Give age.\n", int)
@@ -291,7 +310,7 @@ def create_user():
         print("\nUsername already exists")
     if resp.status_code == 201:
         p = os.path.dirname(os.path.abspath(__file__))
-        with open(p+"/apikeys/"+ username + ".txt", "w") as f:
+        with open(p+"/apikeys/"+ username + ".txt", "w", encoding='UTF-8') as f:
             f.write(resp.headers["API-key"])
     print_main_menu()
 
@@ -317,8 +336,8 @@ if __name__ == "__main__":
     CURRENT_URL = "movies/"
     with requests.Session() as s:
         s.headers.update({"Accept": "application/vnd.mason+json"})
-        resp = s.get(API_URL + "/api/movies/")
-        if resp.status_code != 200:
+        response = s.get(API_URL + "/api/movies/")
+        if response.status_code != 200:
             print("Unable to access API.")
         else:
             print_main_menu()

@@ -73,6 +73,7 @@ class MasonBuilder(dict):
 class ReviewSystemBuilder(MasonBuilder):
     """ReviewSystem specific MasonBuilder"""
     def add_control_add_review(self, movie):
+        '''add control for adding a review'''
         self.add_control(
             "revsys:add-review",
             url_for("reviewcollection", movie=movie),
@@ -83,6 +84,7 @@ class ReviewSystemBuilder(MasonBuilder):
         )
 
     def add_control_delete_review(self, movie, review):
+        '''add control for deleting a review'''
         self.add_control(
             "revsys:delete-review",
             url_for("reviewitem", movie=movie, review=review),
@@ -91,6 +93,7 @@ class ReviewSystemBuilder(MasonBuilder):
         )
 
     def add_control_add_movie(self):
+        '''add control for adding movies'''
         self.add_control(
             "revsys:add-movie",
             url_for("moviecollection"),
@@ -101,6 +104,7 @@ class ReviewSystemBuilder(MasonBuilder):
         )
 
     def add_control_delete_movie(self, movie):
+        '''add control for deleting a movie'''
         self.add_control(
             "revsys:delete-movie",
             url_for("movieitem", movie=movie),
@@ -109,6 +113,7 @@ class ReviewSystemBuilder(MasonBuilder):
         )
 
     def add_control_edit_movie(self, movie):
+        '''add control for editing movie'''
         self.add_control(
             "revsys:edit-movie",
             url_for("movieitem", movie=movie),
@@ -119,6 +124,7 @@ class ReviewSystemBuilder(MasonBuilder):
         )
 
     def add_control_add_genre(self):
+        '''add control for adding a genre'''
         self.add_control(
             "revsys:add-genre",
             url_for("genrecollection"),

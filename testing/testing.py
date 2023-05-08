@@ -40,8 +40,19 @@ class TestMovieCollection(object):
             assert "title" in item
             assert "release year" in item
 
+        resp = client.get("/profiles/movie/")
+        assert resp.status_code == 200
+
+        resp = client.get("/review_system/link-relations/")
+        assert resp.status_code == 200
+
+
     def test_post(self, client):
-        new_movie =  {"title":"The Godfather 2", "release_year":1974, "description":"Part 2"}
+        new_movie =  {"title":"The Godfather 2", "release_year":1974, "description":"Part 2", "genres":["Drama"]}
+        resp = client.post("/api/movies/", json=new_movie, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
+        assert resp.status_code == 201
+
+        new_movie =  {"title":"The Godfather 3", "release_year":1974, "description":"Part 3", "genres":["Comedy"]}
         resp = client.post("/api/movies/", json=new_movie, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 201
 
@@ -70,15 +81,25 @@ class TestMovieItem(object):
         assert resp.status_code == 200
         assert json.loads(resp.data)["title"] == "The Dark Knight"
 
+        resp = client.get("/api/movies/nonexistentmovie/")
+        assert resp.status_code == 404
+
     def test_patch(self, client):
         resp = client.get("/api/movies/thedarkknight/")
         assert resp.status_code == 200
         assert json.loads(resp.data)["release year"] == "2008"
 
+        edited_movie =  {"title":"The Dark Knight", "release_year":2009, "genres":["Drama", "Horror"]}
+        resp = client.patch("/api/movies/thedarkknight/", json=edited_movie, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
+        assert resp.status_code == 204
+
         edited_movie =  {"title":"The Dark Knight", "release_year":2009}
         resp = client.patch("/api/movies/thedarkknight/", json=edited_movie, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
         assert resp.status_code == 204
-        
+
+        edited_movie =  {}
+        resp = client.patch("/api/movies/thedarkknight/", json=edited_movie, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
+        assert resp.status_code == 204
         resp = client.get("/api/movies/thedarkknight/")
         assert resp.status_code == 200
         assert json.loads(resp.data)["release year"] == "2009"
@@ -188,3 +209,15 @@ class TestReviewItem(object):
 
         resp = client.get("/api/movies/thedarkknight/reviews/1/")
         assert resp.status_code == 404
+
+
+class TestUserCollection(object):
+
+    def test_post(self, client):
+        new_user = {"username":"testuser1", "age":22, "gender":1}
+        resp = client.post("/api/users/", json = new_user, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
+        assert resp.status_code == 201
+
+        new_user =  {"username":"testuser1", "age":22, "gender":5}
+        resp = client.post("/api/users/", json= new_user, headers={"API-Key":"ea4bfdbe683994744fd665f90ac1f393"})
+        assert resp.status_code == 400
