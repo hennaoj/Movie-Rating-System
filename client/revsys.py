@@ -164,7 +164,7 @@ def view_movie_info(movie):
     "m": ["Return to Movies list", list_movies, []], 
     "n": ["Return to Main Menu", print_main_menu, []], 
     }
-    ask_for_inputs(inputdict, "\nMake your choice (0, 1, 2)?")
+    ask_for_inputs(inputdict, "\nMake your choice (0, m, n)?")
 
 def print_reviews(body):
     '''
@@ -191,7 +191,7 @@ def print_reviews(body):
 
     else:
         print("No reviews yet.\n")
-    ask_for_inputs(inputdict, "\nMake your choice (0, 1, 2)?")
+    ask_for_inputs(inputdict, "\nMake your choice")
 
 
 def edit_a_review(url, review, body):
