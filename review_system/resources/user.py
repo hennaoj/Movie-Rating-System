@@ -47,3 +47,7 @@ class UserCollection(Resource):
                 pass
             return Response(status=404)
         return Response(status=201, headers={"API-key": db_key.key})
+
+    def get(self):
+        user = User.query.filter(User.apikey.has(Apikey.key == request.headers["API-key"]))[0]
+        return Response(json.dumps(user.serialize()), 200)

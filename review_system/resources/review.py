@@ -98,3 +98,34 @@ class ReviewItem(Resource):
         db.session.delete(review)
         db.session.commit()
         return Response(status=204)
+
+
+    @check_api_key
+    def put(self, movie, review):
+        reviewobj = movie.reviews[review]
+        api_key = request.headers["API-key"]
+        if api_key:
+            if reviewobj.user.apikey.key != api_key:
+                return Response(status=401)
+        else:
+            return Response(status=400)
+        try:
+            requestdict = request.json
+        except Exception as e:
+            return Response(status=415)
+        try:
+            validate(requestdict, Review.json_schema())
+        except ValidationError as error:
+            raise BadRequest(description=str(error)) from error
+        try:
+            reviewobj.rating = requestdict["rating"]
+        except:
+            pass
+        try:
+            reviewobj.comment = requestdict["comment"]
+        except:
+            pass
+        reviewobj.date=datetime.now()
+        movie.update_rating()
+        db.session.commit()
+        return Response(status=204)

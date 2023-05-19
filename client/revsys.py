@@ -8,8 +8,9 @@ import sys
 import requests
 
 DEFAULT_API_KEY = "ea4bfdbe683994744fd665f90ac1f393"
-API_KEY = DEFAULT_API_KEY
+USER_DICT = {"username": "", "apikey": ""}
 ASK_LOGIN = True
+
 
 def decorate_title(text, subtext=None):
     '''
@@ -160,8 +161,8 @@ def view_movie_info(movie):
 
     inputdict = {
     "0": ["View Reviews", print_reviews, [body]], 
-    "1": ["Return to Movies list", list_movies, []], 
-    "2": ["Return to Main Menu", print_main_menu, []], 
+    "m": ["Return to Movies list", list_movies, []], 
+    "n": ["Return to Main Menu", print_main_menu, []], 
     }
     ask_for_inputs(inputdict, "\nMake your choice (0, 1, 2)?")
 
@@ -173,20 +174,53 @@ def print_reviews(body):
     resp = s.get(API_URL + body["@controls"]["reviews"]["href"])
     body_ = resp.json()
     reviews = body_["items"]
+    inputdict = {
+    "0": ["Add a Review", add_a_review, [API_URL + body["@controls"]["reviews"]["href"], body]], 
+    "m": ["Return to Movies list", list_movies, []], 
+    "n": ["Return to Main Menu", print_main_menu, []], 
+    }
     if len(reviews) > 0:
         for review in reviews:
             print(review["rating"] + ".0 / 5.0")
             if review["comment"]:
                 print(review["comment"])
             print(f'by {review["user"]}\n')
+            if review["user"] == USER_DICT["username"]:
+                inputdict["1"] = ["Edit your review", edit_a_review, [API_URL + review["@controls"]["self"]["href"], review, body]]
+                inputdict["2"] = ["Delete your review", delete_a_review, [API_URL + review["@controls"]["self"]["href"], body]]
+
     else:
         print("No reviews yet.\n")
-    inputdict = {
-    "0": ["Add a Review", add_a_review, [API_URL + body["@controls"]["reviews"]["href"], body]], 
-    "m": ["Return to Movies list", list_movies, []], 
-    "n": ["Return to Main Menu", print_main_menu, []], 
-    }
     ask_for_inputs(inputdict, "\nMake your choice (0, 1, 2)?")
+
+
+def edit_a_review(url, review, body):
+    '''
+    Edit a review you made.
+    '''
+    rating = None
+    while rating not in [1, 2, 3, 4, 5]:
+        try:
+            print("Previous rating: " + review["rating"] + "\n")
+            rating = int(input("Rating for movie? (1, 2, 3, 4, 5) "))
+            if rating not in [1, 2, 3, 4, 5]:
+                raise ValueError
+        except ValueError:
+            print("Invalid input. Give integer between 1-5")
+    print("Previous comment: " + review["comment"] + "\n")
+    comment = str(input("Write a comment.\n\n"))
+    review =  {"rating":int(rating), "comment":comment, "apikey":USER_DICT["api_key"]}
+    resp = s.put(url, json=review, headers={"API-Key":USER_DICT["api_key"]})
+    print_reviews(body)
+
+
+def delete_a_review(url, body):
+    '''
+    Delete your review to a movie.
+    '''
+    resp = s.delete(url, headers={"API-Key":USER_DICT["api_key"]})
+    print_reviews(body)
+
 
 def add_a_review(url, body):
     '''
@@ -201,10 +235,9 @@ def add_a_review(url, body):
         except ValueError:
             print("Invalid input. Give integer between 1-5")
     comment = str(input("Write a comment.\n\n"))
-    review =  {"rating":int(rating), "comment":comment, "apikey":API_KEY}
-    resp = s.post(url, json=review, headers={"API-Key":API_KEY})
+    review =  {"rating":int(rating), "comment":comment, "apikey":USER_DICT["api_key"]}
+    resp = s.post(url, json=review, headers={"API-Key":USER_DICT["api_key"]})
     print_reviews(body)
-    print(resp)
 
 def view_movies_in_genre(genre):
     '''
@@ -248,35 +281,6 @@ def search_for_movie():
     inputdict["n"] = ["Return to main menu", print_main_menu, []]
     ask_for_inputs(inputdict, "\nLook at specific movie or return: ", False)
 
-def check_api_file():
-    '''
-    Check api file folder for {username}.txt files.
-    '''
-    p = os.path.dirname(os.path.abspath(__file__))
-    apifiles = os.listdir(p + "/apikeys/")
-    global API_KEY
-    global ASK_LOGIN
-    if len(apifiles) == 0:
-        return()
-    txtfiles = filter(lambda x: x[-4:] == '.txt', apifiles)
-    for i in txtfiles:
-        try:
-            with open(p+"/apikeys/"+i, "r", encoding='UTF-8') as f:
-                line = f.readline()
-                name = i.split(".")[0]
-                choice = input("Log in as " + name + "? (y/n)")
-                if choice == "y":
-                    API_KEY = line
-                    ASK_LOGIN = False
-                    break
-                if choice == "n":
-                    pass
-                else:
-                    print("Invalid input.")
-        except:
-            pass
-    return()
-
 def validate_input(prompt, inputtype, validlist=False):
     '''
     Validate given input
@@ -310,26 +314,56 @@ def create_user():
         print("\nUsername already exists")
     if resp.status_code == 201:
         p = os.path.dirname(os.path.abspath(__file__))
-        with open(p+"/apikeys/"+ username + ".txt", "w", encoding='UTF-8') as f:
+        with open(p+"/apikeys/apikey.txt", "w", encoding='UTF-8') as f:
             f.write(resp.headers["API-key"])
-    print_main_menu()
+    log_in()
 
 def print_main_menu():
     '''
     Prints the main menu with different functionality options.
     '''
     decorate_title("Movie Rating System Client", "View movie information and reviews")
-    if ASK_LOGIN:
-        check_api_file()
     inputdict = {
     "1": ["List of movies in the database", list_movies, []], 
     "2": ["List of the genres in the database", list_genres, []], 
     "3": ["Search for a movie by title", search_for_movie, []], 
     "n": ["Exit", sys.exit, []]
     }
-    if API_KEY == DEFAULT_API_KEY:
+    if USER_DICT["api_key"] == DEFAULT_API_KEY:
         inputdict["4"] = ["Create user", create_user, []]
     ask_for_inputs(inputdict, "\nWhat do you want to do?", False)
+
+
+def log_in():
+    global USER_DICT
+    p = os.path.dirname(os.path.abspath(__file__))
+    try:
+        with open(p+"/apikeys/apikey.txt", "r", encoding='UTF-8') as f:
+            line = f.readline()
+            resp = s.get(API_URL+"/api/users/", headers={"API-key":line})
+            if resp.status_code == 200:
+                name = resp.json()["username"]
+            else:
+                raise Exception
+            choice = input("Log in as " + name + "? (y/n)")
+            if choice == "y":
+                USER_DICT["username"] = name
+                USER_DICT["api_key"] = line
+                ASK_LOGIN = False
+            elif choice == "n":
+                print("Logging in to default test user 123bob321\n")
+                USER_DICT["username"] = "123bob321"
+                USER_DICT["api_key"] = DEFAULT_API_KEY
+            else:
+                print("Invalid input.")
+    except Exception as e:
+        print("No valid API-keys in apikeys folder\n")
+        print("Logging in to default test user 123bob321\n")
+        USER_DICT["username"] = "123bob321"
+        USER_DICT["api_key"] = DEFAULT_API_KEY
+    print_main_menu()
+
+
 
 if __name__ == "__main__":
     API_URL = "http://localhost:5000"
@@ -340,4 +374,4 @@ if __name__ == "__main__":
         if response.status_code != 200:
             print("Unable to access API.")
         else:
-            print_main_menu()
+            log_in()

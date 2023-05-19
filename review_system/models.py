@@ -198,6 +198,13 @@ class User(db.Model):
     # one-to-many relationship with user-reviews
     reviews = db.relationship("Review", back_populates="user")
 
+    def serialize(self):
+        '''Transform data into dictionary format for JSON'''
+        userdict = {
+            "username": str(self.username)
+        }
+        return userdict
+
     @staticmethod
     def json_schema():
         '''JSON schema for validation'''
