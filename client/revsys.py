@@ -174,23 +174,28 @@ def print_reviews(body):
     resp = s.get(API_URL + body["@controls"]["reviews"]["href"])
     body_ = resp.json()
     reviews = body_["items"]
-    inputdict = {
-    "0": ["Add a Review", add_a_review, [API_URL + body["@controls"]["reviews"]["href"], body]], 
+    inputdict = { 
     "m": ["Return to Movies list", list_movies, []], 
     "n": ["Return to Main Menu", print_main_menu, []], 
     }
     if len(reviews) > 0:
+        has_a_review = False
         for review in reviews:
             print(review["rating"] + ".0 / 5.0")
             if review["comment"]:
                 print(review["comment"])
             print(f'by {review["user"]}\n')
-            if review["user"] == USER_DICT["username"]:
+            if review["user"] == USER_DICT["username"] and USER_DICT["username"] != "123bob321":
                 inputdict["1"] = ["Edit your review", edit_a_review, [API_URL + review["@controls"]["self"]["href"], review, body]]
                 inputdict["2"] = ["Delete your review", delete_a_review, [API_URL + review["@controls"]["self"]["href"], body]]
-
+                has_a_review = True
+        #user should only be able to add one review per movie, if one does not exist, the choice to add one is given
+        if not has_a_review and USER_DICT["username"] != "123bob321":
+            inputdict["0"] = ["Add a Review", add_a_review, [API_URL + body["@controls"]["reviews"]["href"], body]]
     else:
         print("No reviews yet.\n")
+        if USER_DICT["username"] != "123bob321":
+            inputdict["0"] = ["Add a Review", add_a_review, [API_URL + body["@controls"]["reviews"]["href"], body]]
     ask_for_inputs(inputdict, "\nMake your choice")
 
 
@@ -314,8 +319,14 @@ def create_user():
         print("\nUsername already exists")
     if resp.status_code == 201:
         p = os.path.dirname(os.path.abspath(__file__))
-        with open(p+"/apikeys/apikey.txt", "w", encoding='UTF-8') as f:
-            f.write(resp.headers["API-key"])
+        try:
+            with open(p+"/apikeys/apikey.txt", "w", encoding='UTF-8') as f:
+                f.write(resp.headers["API-key"])
+        except FileNotFoundError:
+            os.mkdir(p+"/apikeys/")
+            with open(p+"/apikeys/apikey.txt", "w", encoding='UTF-8') as f:
+                f.write(resp.headers["API-key"])
+            
     log_in()
 
 def print_main_menu():
@@ -351,14 +362,14 @@ def log_in():
                 USER_DICT["api_key"] = line
                 ASK_LOGIN = False
             elif choice == "n":
-                print("Logging in to default test user 123bob321\n")
+                #print("Logging in to default test user 123bob321\n")
                 USER_DICT["username"] = "123bob321"
                 USER_DICT["api_key"] = DEFAULT_API_KEY
             else:
                 print("Invalid input.")
     except Exception as e:
         print("No valid API-keys in apikeys folder\n")
-        print("Logging in to default test user 123bob321\n")
+        #print("Logging in to default test user 123bob321\n")
         USER_DICT["username"] = "123bob321"
         USER_DICT["api_key"] = DEFAULT_API_KEY
     print_main_menu()
